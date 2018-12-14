@@ -123,3 +123,14 @@ If working iteratively rebuilding the image everytime some changes are made woul
 ```bash
 docker run --rm -v <absolute_path_to_project_root_directory>:/tmp/dashboard/ dashboard:tests
 ```
+
+## Credits
+
+* Concept & Product Design: 
+[JoannaBorun](https://github.com/JoannaBorun)
+* Development
+[esthomw](https://github.com/esthomw)
+[jcellary](https://github.com/jcellary)
+[szczeles](https://github.com/szczeles)
+* QA
+[klistiano](https://github.com/klistiano)
