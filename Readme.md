@@ -72,6 +72,8 @@ In order to display information related to any external ETLs there are some addi
 
 ## Running locally
 
+See: https://hub.docker.com/r/fandom/discreetly/
+
 Before running the container with app we first need to build it so it becomes available
 in our local docker repository. Run the following command from project's root directory.
 
