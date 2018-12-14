@@ -1,0 +1,130 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}Tables{% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Tables dashboard</li>
+{%  endblock %}
+
+{% block body %}
+
+<link href="{{ url_for('static', filename='css/table_dashboard.css')}}" rel="stylesheet">
+
+<div id="tooling">
+        <div id="search">
+                <input placeholder="&#x1F50D; Search" />
+                <div id="clear-search-container">
+                    <p id="clear-search">&times;</p>
+                </div>
+            </div>
+</div>
+
+<div id="table-container">
+    <div class="row mt-3 table-header">
+        <div class="col-9 col-sm-6 col-md-4">Database | Table name</div>
+        <div class="col col-sm-3 col-md-3 d-none d-sm-block">Last update</div>
+        <div class="col-3 col-sm-3 col-md-2">Status</div>
+        <div class="col-md-3 d-none d-md-block">Record count</div>
+    </div>
+{% for table in tables %}
+<div id="{{ table.id.split('.')[1] }}" class="row mt-3 table-data">
+  <div class="col-9 col-sm-6 col-md-4">
+    <p>
+        {{ table.id }}
+        {% if table.active_alerts %}
+            {% for alert in table.active_alerts %}
+                <a href="{{ alert.link }}" target="_blank"><i class="cui-circle-x text-danger" data-toggle="tooltip" data-placement="bottom" title="Alert triggered {{ alert.name}}"></i></a>
+            {% endfor %}
+        {% else %}
+            <i class="cui-circle-check text-success" data-toggle="tooltip" data-placement="bottom" title="No active alerts"></i>
+        {% endif %}
+    </p>
+  </div>
+  <div class="col col-sm-3 col-md-3 d-none d-sm-block">
+      {% if table.last_update %}{{ table.last_update.strftime('%Y-%m-%d %H:%M:%S') }}{% else %}Unknown{% endif %}
+  </div>
+  <div class="col-3 col-sm-3 col-md-2">
+    <a href="/tables/{{ table.id }}" role="button" class="btn btn-{{ common.status_button_color(table.state) }}" {% if table.load_duration_seconds %}data-toggle="tooltip" data-placement="bottom" title="Load duration: {{ table.load_duration_seconds|describe_seconds }}"{% endif %}>
+        {{ table.state }}
+    </a>
+  </div>
+  <div class="col-md-3 d-none d-md-block">
+    {% if table.counts %}
+        <canvas id="canvas_{{ table.id }}" height="30" width="30" style="cursor: pointer;" onClick="window.location='/tables/{{ table.id }}';"></canvas>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}
+
+{% block charts %}
+    <script>
+    {% for table in tables %}
+        // {{ table }}
+        {% if table.counts %}
+
+        new Chart(document.getElementById('canvas_{{ table.id }}').getContext('2d'),
+        {
+			type: 'bar',
+			data: {
+				labels: [{{ table.counts | map(attribute=0) | map('tojson') | join(',') }}],
+				datasets: [{
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+                        {{ table.counts | map(attribute=1) | join(',') }}
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+                maintainAspectRatio: false,
+				tooltips: {
+				    enabled: false,
+					mode: 'index',
+                    axis: 'y',
+					intersect: false,
+				},
+				hover: {
+				    display: false,
+					mode: 'nearest',
+					intersect: true
+				},
+                legend: {
+				    display: false
+                },
+				scales: {
+					xAxes: [{
+						display: false
+					}],
+					yAxes: [{
+						display: false,
+						scaleLabel: {
+							display: true,
+							labelString: 'Records'
+						}
+					}]
+				}
+			}
+		});
+    {% endif %}
+
+    {% endfor %}
+    </script>
+
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/render_vis.js') }}"></script>
+    <script>
+        let search = new SearchProvider('.table-data');
+        search.main();
+
+        window.onload = checkHighlight;
+      </script>
+{% endblock %}

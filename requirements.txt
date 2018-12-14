@@ -1,0 +1,9 @@
+Flask==1.0.*
+Flask-SSLify
+gunicorn==19.9.*
+influxdb==5.2.*
+PyYAML==3.13
+loginpass>=0.1.1
+mysqlclient==1.3.12
+backoff
+requests==2.20.0

@@ -1,0 +1,74 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}Table {{ name }} details{% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/tables">Tables dashboard</a></li>
+    <li class="breadcrumb-item active">Table {{ name }}</li>
+{%  endblock %}
+
+{% block body %}
+    <canvas id="chart"></canvas>
+{% endblock %}
+
+{% block charts %}
+    <script>
+        new Chart(document.getElementById('chart').getContext('2d'),
+        {
+			type: 'line',
+			data: {
+				labels: [{{ counts | map(attribute=0) | map('tojson') | join(',') }}],
+				datasets: [{
+				    label: 'Record count',
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: [
+                        {{ counts | map(attribute=1) | join(',') }}
+					],
+					fill: false,
+                    trendlineLinear: {
+                        style: "rgba(255,105,180, .8)",
+                        width: 2
+                    },
+				}]
+			},
+            options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Record count per day'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Day'
+						}
+					}],
+					yAxes: [{
+						ticks: {
+							beginAtZero:true
+						},
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Records'
+						}
+					}]
+				}
+			}
+		});
+    </script>
+{% endblock %}

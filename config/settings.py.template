@@ -1,0 +1,60 @@
+# This is a configuration file for dashboard application. This file is a standard python file, so if needed
+# it supports all python operations, e.g. os package for working with operating system specific features.
+
+import os
+
+ENV_VAR_PREFIX = os.getenv('ENV_VAR_PREFIX', '')
+DEBUG = not 'PROD' in ENV_VAR_PREFIX
+
+# Airflow database
+# Define configuration options required to connect to your Airflow database instance.
+# This configuration file assumes those options are provided through environment variables.
+# Database host machine
+# AIRFLOW_DB_HOST = os.environ['AIRFLOW_DB_HOST']
+# Database user
+# AIRFLOW_USERNAME = os.environ['AIRFLOW_USERNAME']
+# User password
+# AIRFLOW_PASSWORD = os.environ['AIRFLOW_PASSWORD']
+# Database instance name
+# AIRFLOW_DATABASE = os.environ['AIRFLOW_DATABASE']
+
+# This variable holds DNS address definition, e.g 'https://airflow.fandom.com'
+# AIRFLOW_WEBSERVER_BASE_URL = os.environ['AIRFLOW_WEBSERVER_BASE_URL']
+
+# InfluxDB
+# The dashboard supports retriving data from an InfluxDB instance. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore InfluxDB functionality.
+# INFLUXDB_HOST = os.environ['INFLUXDB_HOST']
+# INFLUXDB_USERNAME = os.environ['INFLUXDB_USERNAME']
+# INFLUXDB_PASSWORD = os.environ['INFLUXDB_PASSWORD']
+# INFLUXDB_DATABASE = os.environ['INFLUXDB_DATABASE']
+
+# Prometheus
+# The dashboard supports retriving data from an Prometheus instance. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore Prometheus functionality.
+# PROMETHEUS_HOST = os.environ['PROMETHEUS_HOST']
+
+# OAuth
+# The dashboard supports authorization through Google OAuth. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore OAuth functionality.
+# GOOGLE_CLIENT_ID = os.environ['OAUTH_CLIENT_ID']
+# GOOGLE_CLIENT_SECRET = os.environ['OAUTH_SECRET']
+# Use domain that is used for OAuth services at your comapny, e.g. fandom.com
+# OAUTH_DOMAIN = 
+
+# Application secret
+# Secret key used for making the application secure. If deployed on production or other publicly available service it is advisable
+# to provide secret. If tested locally the default can be used.
+SECRET_KEY = os.environ.get('SECRET_KEY') or '8FF5F14DC7DBF90FDE769C3BF7FDCFA16FEF3D1E'
+
+# Company name
+# This name will be displayed on the header of the dashboard
+COMPANY_NAME = 'ACME'
+
+# Extra tab
+# Different ETLs external to Airflow can be defined in `extra_etl.yaml` files. In order to align the dashboard UI with etl.yaml a distinct name can be defined here.
+# The name (EXTRA_TAB) will be visible in dashboard UI as an additional view accessible from top menu, e.g. if you define the name to `Streaming` it will be visible as one of the views.
+# By default, this view is switched off (the users won't see it in the dashboard, although endpoint is active). If you want to m use this view change EXTRA_ACTIVE to True.
+# Remember, that the html file needs to be provided for this endpoint as `extra.html` in `dashboard/blueprints/tamplates/`. The dashboard uses standard jinja templating engine.
+EXTRA_ACTIVE = False
+EXTRA_TAB = os.environ.get('EXTRA_TAB') or 'Extra'

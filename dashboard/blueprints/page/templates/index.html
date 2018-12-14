@@ -1,0 +1,92 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}Fandom Data{% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item active"><a href="/">Home</a></li>
+{% endblock %}
+
+{% block body %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    {% set etl_failure = etl_summary | selectattr('state', 'eq', 'failed') | list | count > 0 %}
+
+    <div id="etl-status" class="card{% if etl_failure %} text-white etl-danger {% endif %}" style="max-width: 18rem;">
+        {% if etl_failure %}
+            <div class="card-header etl-danger"><b>ETL status: FAILURE</b></div>
+        {% else %}
+            <div class="card-header etl-success"><b>ETL status: OK</b></div>
+        {% endif %}
+
+        <div class="card-body">
+            {% if etl_failure %}
+                <h5 class="card-title">List of failed ETLs</h5>
+                <ul>
+                    {% for etl in  etl_summary | selectattr('state', 'eq', 'failed') %}
+                        <li>{{ etl.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <h5 class="card-title">Succeeded:
+                <button type="button"
+                        class="btn etl-success">{{ etl_summary | selectattr('state', 'eq', 'success') | list | count }}
+                </button>
+            </h5>
+            <h5 class="card-title">Running:
+                <button type="button"
+                        class="btn etl-issue">{{ etl_summary | selectattr('state', 'eq', 'running') | list | count }}
+                </button>
+            </h5>
+
+        </div>
+    </div>
+
+    {% if tables %}
+    <div class="row">
+        {% set tables_failure = tables | selectattr('state', 'eq', 'failed') | list | count > 0 %}
+
+
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header{% if tables_failure %} text-white etl-danger {% endif %}">
+                    <b>Tables daily load status</b>
+                </div>
+                <div class="card-body">
+                    {% if tables_failure %}
+                        <h4>There are tables that failed to load toady, check <a href="{{ url_for('page.tables_dashboard') }}">tables dashboard</a></h4>
+                    {% endif %}
+                    {% set today_tables = tables|
+                                selectattr('state', 'eq', 'success')|
+                                selectattr('last_update', 'ne', none)|
+                                selectattr('last_update', 'gt', now.replace(hour=0, minute=0, second=0))|
+                                list|
+                                count %}
+                    <h5 class="card-title">Daily load progress:
+                        <button type="button"
+                                class="btn etl-{% if today_tables == tables|count %}success{% else %}issue{% endif %}">
+                            <b>{{ (today_tables/tables|count * 100)|int }}%</b>
+                        </button>
+                    </h5>
+                    <p>Total tables: {{ tables|count }}</p>
+                    <p>Tables updated today: {{ today_tables }}</p>
+                    {% set stale_tables = tables|selectattr('last_update', 'ne', none)|selectattr('last_update', 'lt', now.replace(hour=0, minute=0, second=0))|list %}
+                    {% if stale_tables|count > 0 %}
+                        <p><b>Tables awaiting completion</b>:
+                        <ul>
+                            {% for table in stale_tables|batch(5)|first %}
+                                <li>{{ table.id }}</li>
+                            {% endfor %}
+                            {% if stale_tables|count > 5 %}<li>...</li>{% endif %} {# we're showing 5 tables max #}
+                        </ul>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+{% endblock %}

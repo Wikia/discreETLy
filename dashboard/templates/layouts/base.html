@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <base href="./">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <meta http-equiv="refresh" content="120">
+  <title>{% block title %}{% endblock %}</title>
+  <!-- Icons-->
+  <link href="https://unpkg.com/@coreui/icons/css/coreui-icons.min.css" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" rel="stylesheet">
+  <!-- Main styles for this application-->
+  <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js" rel="stylesheet">
+
+  <!-- base.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css')}}">
+
+  <!-- Vega, vega-lite and vega-embedded -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@4.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@2.6.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.18.1"></script>
+
+</head>
+
+<body class="app header-fixed sidebar-hidden aside-menu-fixed">
+  <header class="app-header navbar">
+    <a class="navbar-brand" href="/">
+      <img class="navbar-brand-full" src="https://image.flaticon.com/icons/png/128/439/439186.png" width="30" height="30"
+        alt="CoreUI Logo">
+      <img class="navbar-brand-minimized" src="https://image.flaticon.com/icons/png/128/439/439186.png" width="30"
+        height="30" alt="CoreUI Logo">
+      &nbsp; {{ config['COMPANY_NAME'] }} Data
+    </a>
+
+    <div class="navbarm">
+      <ul class="nav navbar-nav">
+        <li class="nav-item px-3">
+          <a class="nav-link" href="{{ url_for('page.etl_dashboard') }}">ETLs</a>
+        </li>
+        <li class="nav-item px-3">
+          <a class="nav-link" href="{{ url_for('page.tables_dashboard') }}">Tables</a>
+        </li>
+        <li class="nav-item px-3">
+          <a class="nav-link" href="/reports">Reports</a>
+        </li>
+        {% if config['EXTRA_ACTIVE'] %}
+        <li class="nav-item px-3">
+          <a class="nav-link" href="/extra">{{ config['EXTRA_TAB'] }}</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <ul class="nav navbar-nav ml-auto loginrefresh">
+      <li class="nav-item refresh-info">
+
+        <small>Page refreshed at: <b>{{ now.strftime('%H:%M:%S') }} UTC</b></small>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          <img class="img-avatar" src="{{ session.user.picture }}" alt="{{ session.user.email }}">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-header text-center">
+            <strong>Settings</strong>
+          </div>
+          <a class="dropdown-item" href="{{ url_for('page.logout') }}">
+            <i class="fa fa-lock"></i> Logout</a>
+        </div>
+      </li>
+    </ul>
+  </header>
+  <div class="app-body">
+    <main class="main">
+      <div class="breadcrumb-container">
+        <!-- Breadcrumb-->
+        <ol class="breadcrumb">
+          {% block nav %}{% endblock %}
+          <!-- Breadcrumb Menu-->
+          <li class="breadcrumb-menu d-md-down-none">
+          </li>
+        </ol>
+        <div class="app-help">
+          ?
+        </div>
+      </div>
+      <div class="container-fluid">
+        {% block body %}{% endblock %}
+      </div>
+    </main>
+
+    <!-- help model hidden -->
+    <div class="help-modal">
+      <p><b>ETLs</b> - information about the status of all ETL processes (DAGs) available in airflow database. If tables are defined this view shows number of processed tables. If tables information
+      is missing, it shows number of tasks completed.</p>
+      <p><b>Tables</b> - information available only it tables mapping is defined in a yaml file. It shows current status of processing related to a particular table.</p>
+      <p><b>Reports</b> - information available only if reports mapping is defined in a yaml file. It shows current status of processing related to a set of tables that constitute to a particular report.</p>
+      <p>For more information contact the team responsible for maintaining the dashboard or search the <a href="https://github.com/Wikia/discrETLy">documentation</a>.</p>
+    </div>
+  </div>
+  <footer class="app-footer" style="display: none">
+    <div>
+      <a href="https://coreui.io">CoreUI</a>
+      <span>&copy; 2018 creativeLabs.</span>
+    </div>
+    <div class="ml-auto">
+      <span>Powered by</span>
+      <a href="https://coreui.io">CoreUI</a>
+    </div>
+  </footer>
+  <!-- CoreUI and necessary plugins-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.4.0/dist/perfect-scrollbar.common.min.js"></script>
+  <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.min.js"></script>
+  <!-- Plugins and scripts required by this view-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline@0.0.3/chartjs-plugin-trendline.js"></script>
+  <script src="{{ url_for('static', filename='vendors/@coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js') }}"></script>
+  {% block charts %}{% endblock %}
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+  <script>
+    var helpButton = document.querySelector(".app-help");
+    var helpInfo = document.querySelector(".help-modal");
+
+    helpButton.addEventListener("mouseover", (_) => helpInfo.style.visibility = "visible");
+    helpButton.addEventListener("mouseout", (_) => helpInfo.style.visibility = "hidden");
+  </script>
+</body>
+
+</html>

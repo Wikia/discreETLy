@@ -1,0 +1,95 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}ETLs{% endblock %}
+
+{% block nav %}
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item active">ETL dashboard</li>
+
+{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/etl_dashboard.css') }}">
+
+<div id="tooling_help">
+    <div id="tooling">
+        <div id="search">
+            <input placeholder="&#x1F50D; Search" />
+            <div id="clear-search-container">
+                <p id="clear-search">&times;</p>
+            </div>
+        </div>
+    </div>
+    <div id="help">
+      <div>
+          <p>Legend:</p>
+      </div>
+      <div>
+          <p><span class="dot success">&#9673;</span> Success</p>
+      </div>
+      <div>
+          <p><span class="dot running">&#9673;</span> In Progress</p>
+      </div>
+      <div>
+          <p><span class="dot failed">&#9673;</span> Failure</p>
+      </div>
+    </div>
+</div>
+
+<div id="list-container">
+    <div id="table-container">
+        <div class="row mt-2 table-header">
+            <div class="col-7 col-sm-5 col-md-4 col-xl-2">ETL name</div>
+            <div class="col col-sm-3 col-md-2 col-xl-2 d-none d-sm-block">Latest run (UTC)</div>
+            <div class="col-4 col-sm-4 col-md-2 col-xl-2">ETL state</div>
+            <div class="col col-md-2 col-xl-2 d-none d-md-block">Duration (sec)</div>
+            <div class="col-12 col-xl-4">Success | Failure</div>
+        </div>
+  {% for etl in etls|sort(attribute='name') %}
+  <div class="row mt-2 etl-data">
+    <div class="col-7 col-sm-5 col-md-4 col-xl-2 dag-name">
+      <p>{{ etl.name }}</p>
+    </div>
+    <div class="col col-sm-3 col-md-2 col-xl-2 d-none d-sm-block">
+      <p>
+          {{ etl.schedule }}
+      </p>
+    </div>
+    <div class="col-4 col-sm-4 col-md-2 col-xl-2">
+      <a href="{{ config.AIRFLOW_WEBSERVER_BASE_URL }}/admin/airflow/tree?dag_id={{ etl.dag_id }}" target="_blank"  ><button type="button" class="btn status btn-{{ common.status_button_color(etl.state) }}">
+          {% if etl.state == 'running' %}
+            <span class="cui-speedometer"></span>
+          {% endif %}
+          {% if etl.tables_total %}
+            {{ (etl.tasks_completed / etl.tasks_total * 100)|int }}% ({{ etl.tables_completed }} of {{ etl.tables_total }}) </button>
+          {% else %}
+            {{ (etl.tasks_completed / etl.tasks_total * 100)|int }}% ({{ etl.tasks_completed }} of {{ etl.tasks_total }}) </button>
+          {% endif %}
+      </a>
+      <a href="{{ url_for('page.etl_details', dag_id=etl.dag_id, execution_date=etl.last_execution_date) }}">
+        <img src="{{ url_for('static', filename='images/graph_icon.svg')}}" alt="Details">
+      </a>
+    </div>
+    <div class="col col-md-2 col-xl-2 d-none d-md-block">
+      {% if etl.duration_seconds %}<p>{{ etl.duration_seconds|describe_seconds }}</p>{% endif %}
+    </div>
+    <div class="col-12 col-xl-4">
+      <p>
+        {% for run in history[etl.name] %}
+          <a href="{{ config.AIRFLOW_WEBSERVER_BASE_URL }}/admin/airflow/graph?execution_date={{ run.date }}&dag_id={{ etl.dag_id }}" class="dot {{ run.state }}"
+            data-toggle="tooltip" data-placement="bottom" title="{{ run.date }}">&#9673;</a>
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script>
+  let search = new SearchProvider('.etl-data');
+  search.main();
+</script>
+
+{% endblock %}

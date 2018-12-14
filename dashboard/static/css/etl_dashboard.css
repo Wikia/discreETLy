@@ -1,0 +1,34 @@
+.status {
+    width: 8rem;
+}
+
+.dot {
+    font-size: 1.2em;
+    line-height: .25em;
+}
+
+.etl-data {
+    margin: 0 !important;
+    padding: .5rem;
+}
+
+.etl-data div p {
+    margin: 0 !important;
+    padding-top: .5rem;
+}
+
+.etl-data:nth-child(odd) {
+    background-color: #dee7e5;
+}
+
+.dot.success {
+    color: #4dbd74;
+}
+
+.dot.failed {
+    color: #f86c6b;
+}
+
+.dot.running {
+    color: #ffc107;
+}

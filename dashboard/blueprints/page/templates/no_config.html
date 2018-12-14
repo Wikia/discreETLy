@@ -1,0 +1,25 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}data.wikia-services.com - internal server error{% endblock %}
+
+{% block nav %}
+
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+{% if filename=="tables.yaml" %}
+<li class="breadcrumb-item"><a href="/tables">Tables</a></li>
+{% elif filename=="reports.yaml" %}
+<li class="breadcrumb-item"><a href="/reports">Reports</a></li>
+{% else %}
+<li class="breadcrumb-item"><a href="/extra">Extra ETLS</a></li>
+{% endif %}
+
+{% endblock %} 
+
+{% block body %}
+
+    <div class="text-center">
+        <h2>OOPS, this page is empty. But you can help me display 
+            some data here if you create a valid {{ filename }} file, see the <a href="https://github.com/Wikia/discrETLy">docs</a>.</h2>
+    </div>
+
+{% endblock %}

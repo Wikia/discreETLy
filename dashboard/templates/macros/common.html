@@ -1,0 +1,8 @@
+
+{% macro status_button_color(status) -%}
+{% if status == 'running' %}warning
+{% elif status == 'success' %}success
+{% elif status == 'failed' %}danger
+{% else %}secondary
+{% endif %}
+{%- endmacro %}

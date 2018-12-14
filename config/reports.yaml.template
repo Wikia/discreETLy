@@ -1,0 +1,11 @@
+reports:
+  - id: sample_id
+    definition:
+      name: Sample report
+      owner: John Rambo
+      processing_times: '04:00 UTC'
+      tables:
+        - id: some_table
+          tid: some_table
+          name: Descriptive Name
+          dag: my_dag

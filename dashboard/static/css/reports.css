@@ -1,0 +1,38 @@
+.panel-group {
+    background-color: #ffffff;
+    clear: both
+}
+
+.panel-heading {
+    padding: .5rem;
+    border-bottom: 1px solid black;
+}
+
+.panel-heading:last-of-type {
+    border-bottom: none;
+}
+
+.panel-collapse {
+    border-bottom: 1px solid black;
+    height: 4rem;
+}
+
+.panel-collapse:last-of-type {
+    border-bottom: none;
+}
+
+.dot.success {
+    color: #4dbd74;
+}
+
+.dot.failed {
+    color: #f86c6b;
+}
+
+.dot.running {
+    color: #ffc107;
+}
+
+.dot.root {
+    color: #000000;
+}

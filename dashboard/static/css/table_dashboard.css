@@ -1,0 +1,17 @@
+.table-data {
+    margin: 0 !important;
+    padding: .5rem;
+}
+
+.table-data:nth-child(odd) {
+    background-color: #dee7e5;
+}
+
+.table-data div p {
+    margin: 0 !important;
+    padding-top: .5rem;
+}
+
+.last-update button {
+    width: 14rem;
+}

@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}ETL {{ name }} details{% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('page.etl_dashboard') }}">ETL dashboard</a></li>
+    <li class="breadcrumb-item active">{{ name }}</li>
+
+{%  endblock %}
+
+{% block body %}
+
+    <h2>Tables managed by {{ name }}</h2>
+
+    <div class="card-body">
+        <div id="graph"></div>
+    </div>
+
+    <script>
+     new vega.View(vega.parse({{  raw|safe  }}))
+            .renderer('svg') // set renderer (canvas or svg)
+            .initialize('#graph') // initialize view within parent DOM container
+            .run();
+    </script>
+
+    {# <h2>Tables in progress</h2> #}
+{% endblock %}
