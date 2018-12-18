@@ -11,6 +11,7 @@ from authlib.flask.client import OAuth
 from loginpass import create_flask_blueprint, Google
 
 from dashboard.blueprints.page import page
+from dashboard.blueprints.extra import extra
 from dashboard.dataproviders import *
 from dashboard.service.mysql import MySQLClient
 from dashboard.model.influxdb_data import InfluxDBData
@@ -73,6 +74,7 @@ def create_app(settings_override=None):
         setup_authentication(app)
 
     app.register_blueprint(page)
+    app.register_blueprint(extra)
 
     app.airflow_data_provider = AirflowDBDataProvider(app.config, app.logger, MySQLClient(app.config, app.logger))
     app.influx_data_provider = InfluxDBData(app.config, app.logger) if app.config.get('INFLUXDB_HOST') else None
