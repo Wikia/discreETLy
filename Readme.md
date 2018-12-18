@@ -67,8 +67,8 @@ those definitions separate links need to be provided to point to external monito
 In order to display information related to any external ETLs there are some additional steps required:
 
 - setting `EXTRA_ACTIVE` option in configuration to true,
-- providing a custom jinja template named `extra.html` in `dashboard/blueprints/page/templates`. An example of such template is available [here](examples/extra.html),
-- providing custom logic for data processing in `dashboard/blueprints/page/view.py` method `extra_dashboard` to process and enrich the data.
+- providing a custom jinja template named `extra.html` in `dashboard/blueprints/extra/templates`. An example of such template is available [here](examples/extra.html),
+- providing custom logic for data processing in `dashboard/blueprints/extra/extra.py` method `extra_etl` to process and enrich the data.
 
 ## Running locally
 

@@ -1,13 +1,10 @@
-import json
 from datetime import datetime
 
 from flask import Blueprint
 from flask import current_app as app
-from flask import redirect, render_template, request, session, url_for
+from flask import render_template
 
 import dataclasses as dc
-from dashboard.utils import clean_dag_id
-from dashboard.utils.vis import tree_diagram
 
 extra = Blueprint('extra', __name__, template_folder='templates')
 
