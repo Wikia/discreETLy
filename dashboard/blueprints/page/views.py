@@ -97,13 +97,6 @@ def reports_dashboard():
     else:
         return render_template('no_config.html', filename='reports.yaml')
 
-@page.route('/extra')
-def extra_dashboard():
-    if app.config['EXTRA_ACTIVE']:
-        return render_template('extra.html', filename='extra_etl.yaml and extra.html')
-    else:
-        return render_template('no_config.html', filename='extra_etl.yaml')
-
 
 @page.app_template_filter()
 def describe_seconds(seconds):
