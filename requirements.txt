@@ -7,3 +7,4 @@ loginpass>=0.1.1
 mysqlclient==1.3.12
 backoff
 requests==2.20.0
+boto3==1.9.67

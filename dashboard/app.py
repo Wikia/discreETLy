@@ -92,6 +92,9 @@ def create_app(settings_override=None):
     app.etl_data_provider = EtlDataProvider(
         app.config, extra_etls, app.airflow_data_provider, app.table_data_provider)
 
+    app.description_data_provider = DescriptionData(
+        app.config, app.logger, tables) if app.config.get('COLUMN_DESCRIPTION_ACTIVE') else None
+
     app.report_data_provider = ReportsDataProvider(
         app.airflow_data_provider, reports['reports']
     ) if reports else None

@@ -98,6 +98,14 @@ def reports_dashboard():
         return render_template('no_config.html', filename='reports.yaml')
 
 
+@page.route('/descriptions')
+def extra_dashboard():
+    if app.config['COLUMN_DESCRIPTION_ACTIVE']:
+        return render_template('descriptions.html', tables=app.description_provider.tables())
+    else:
+        return render_template('no_config.html', filename='COLUMN_DESCRIPTION_SERVICE')
+
+
 @page.app_template_filter()
 def describe_seconds(seconds):
     m, s = divmod(int(seconds), 60)
