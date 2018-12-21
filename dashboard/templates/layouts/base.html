@@ -53,6 +53,11 @@
           <a class="nav-link" href="/extra">{{ config['EXTRA_TAB'] }}</a>
         </li>
         {% endif %}
+        {% if config['COLUMN_DESCRIPTION_ACTIVE'] %}
+        <li class="nav-item px-3">
+          <a class="nav-link" href="/descriptions">Table Descriptions</a>
+        </li>
+        {% endif %}
       </ul>
     </div>
 

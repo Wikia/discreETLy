@@ -10,7 +10,7 @@
 
 {% block body %}
 
-<link href="{{ url_for('static', filename='css/table_dashboard.css')}}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/descriptions.css')}}" rel="stylesheet">
 
 <div id="tooling">
         <div id="search">
@@ -23,19 +23,21 @@
 
 <div id="table-container">
     <div class="row mt-3 table-header">
-        <div class="col-3">Database | Table name</div>
+        <div class="col-3"><a href="#" id="all_toggle">+</a>Database | Table name</div>
         <div class="col-9">Column | Type | Description</div>
     </div>
-{% for table_name, columns in tables %}
+{% for table_name, columns in tables.items() %}
 <div id="{{ table_name.split('.')[1] }}" class="row mt-3 table-data">
   <div class="col-3">
     <p>
+        <a href="#" id="toggle_{{ table_name }}">+</a>
         {{ table_name }}
     </p>
   </div>
   <div class="col-9">
+    <div class="column-data-section" id="columns_{{ table_name }}">
     {% for column in columns %}
-      <div class="row mt-3 table-data">
+      <div class="row mt-3 column-data">
         <div class="col-3">
           <p>
               {{ column.name }}
@@ -53,6 +55,7 @@
         </div>
       </div>
     {% endfor %}
+    </div>
   </div>
 </div>
 {% endfor %}
@@ -70,5 +73,28 @@
         search.main();
 
         window.onload = checkHighlight;
+
+        $("a[id^=toggle_]").click(function(event) {
+            id = ("#columns_" + $(this).attr('id').substr(7)).replace(".", "\\.")
+            if ($(this).text() === "+") {
+                $(id).css("display", "block");
+                $(this).text("-")
+            } else {
+                $(id).css("display", "none");
+                $(this).text("+")
+            }
+            event.preventDefault();
+        });
+
+        $("a[id=all_toggle]").click(function(event) {
+            if ($(this).text() === "+") {
+                $("div[id^=columns_]").css("display", "block");
+                $(this).text("-");
+            } else {
+                $("div[id^=columns_]").css("display", "none");
+                $(this).text("+");
+            }
+            event.preventDefault();
+        });
       </script>
 {% endblock %}

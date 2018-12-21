@@ -18,6 +18,7 @@ from dashboard.model.influxdb_data import InfluxDBData
 from dashboard.model.prometheus_data import PrometheusData
 from dashboard.model.tables_data import TableDataProvider
 from dashboard.model.reports_data import ReportsDataProvider
+from dashboard.model.description_data import DescriptionData
 from dashboard.models import ExtraEtl
 
 

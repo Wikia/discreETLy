@@ -8,10 +8,11 @@ class DescriptionData:
             raise Exception('COLUMN_DESCRIPTION_SERVICE not set')
 
         try:
-            module_name, class_name = service_class.rsplit('.', 1)
-            module = __import__(module_name)
-            class_ = getattr(module, class_name)
-            self.description_service = class_(tables, config)
+            parts = service_class.split('.')
+            module = __import__('.'.join(parts[:-1]))
+            for comp in parts[1:]:
+                module = getattr(module, comp)
+            self.description_service = module(logger, config, tables)
         except Exception as e:
             raise Exception(f'Could not instantiatie the provided COLUMN_DESCRIPTION_SERVICE: {service_class}') from e
 

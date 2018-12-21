@@ -101,7 +101,7 @@ def reports_dashboard():
 @page.route('/descriptions')
 def extra_dashboard():
     if app.config['COLUMN_DESCRIPTION_ACTIVE']:
-        return render_template('descriptions.html', tables=app.description_provider.tables())
+        return render_template('descriptions.html', tables=app.description_data_provider.tables())
     else:
         return render_template('no_config.html', filename='COLUMN_DESCRIPTION_SERVICE')
 

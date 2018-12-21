@@ -7,7 +7,7 @@ class SearchProvider {
 
     filterList(nodes, search) {
         nodes.forEach(node => {
-            node.style.display = node.firstElementChild.innerText.toLowerCase().includes(search.toLowerCase()) ? "" :
+            node.style.display = node.innerHTML.toLowerCase().includes(search.toLowerCase()) ? "" :
                 "none"
         })
     }
