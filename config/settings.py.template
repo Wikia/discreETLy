@@ -59,14 +59,6 @@ COMPANY_NAME = 'ACME'
 EXTRA_ACTIVE = False
 EXTRA_TAB = os.environ.get('EXTRA_TAB') or 'Extra'
 
-# Extra tab
-# Different ETLs external to Airflow can be defined in `extra_etl.yaml` files. In order to align the dashboard UI with etl.yaml a distinct name can be defined here.
-# The name (EXTRA_TAB) will be visible in dashboard UI as an additional view accessible from top menu, e.g. if you define the name to `Streaming` it will be visible as one of the views.
-# By default, this view is switched off (the users won't see it in the dashboard, although endpoint is active). If you want to m use this view change EXTRA_ACTIVE to True.
-# Remember, that the html file needs to be provided for this endpoint as `extra.html` in `dashboard/blueprints/tamplates/`. The dashboard uses standard jinja templating engine.
-EXTRA_ACTIVE = False
-EXTRA_TAB = os.environ.get('EXTRA_TAB') or 'Extra'
-
 # Set to true to display a tab with table column descriptions. This also requires a service which provides these descriptions
 # The default GlueDescriptionService implementation fetches them from AWS Glue column comments
 COLUMN_DESCRIPTION_ACTIVE = False
