@@ -32,7 +32,9 @@
 <div id="{{ table.id.split('.')[1] }}" class="row mt-3 table-data">
   <div class="col-9 col-sm-6 col-md-4">
     <p>
+        {% if table.link_descriptions %}<a href="descriptions#{{ table.id }}">{% endif %}
         {{ table.id }}
+        {% if table.link_descriptions %}</a>{% endif %}
         {% if table.active_alerts %}
             {% for alert in table.active_alerts %}
                 <a href="{{ alert.link }}" target="_blank"><i class="cui-circle-x text-danger" data-toggle="tooltip" data-placement="bottom" title="Alert triggered {{ alert.name}}"></i></a>

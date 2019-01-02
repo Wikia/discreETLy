@@ -49,7 +49,7 @@ class GlueDescriptionService:
         try:
             glue_tables = self.client.get_tables(DatabaseName=db, MaxResults=1000)
             glue_tables = [{'name': table['Name'], 'columns': [{'name': column['Name'],
-                                                                'description': column.get('Comment'),
+                                                                'description': column.get('Comment') or '',
                                                                 'type': column.get('Type')}
                                                                for column in table['StorageDescriptor']['Columns']]} for
                            table in glue_tables['TableList']]

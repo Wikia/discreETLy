@@ -88,7 +88,8 @@ def create_app(settings_override=None):
     extra_etls = [ExtraEtl(**etl) for etl in extra_etls_file] if extra_etls_file else None
 
     app.table_data_provider = TableDataProvider(
-        app.airflow_data_provider, app.influx_data_provider, app.prometheus_data_provider, tables, app.logger) if tables else None
+        app.airflow_data_provider, app.influx_data_provider,
+        app.prometheus_data_provider, tables, app.logger, app.config) if tables else None
 
     app.etl_data_provider = EtlDataProvider(
         app.config, extra_etls, app.airflow_data_provider, app.table_data_provider)
