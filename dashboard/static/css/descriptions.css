@@ -12,6 +12,14 @@
     padding-top: .5rem;
 }
 
+.table-name {
+    font-weight: bold;
+}
+
+.table-description {
+    font-weight: bold;
+}
+
 .column-data-section {
 	display: block;
 }

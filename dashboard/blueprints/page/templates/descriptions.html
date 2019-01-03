@@ -23,20 +23,21 @@
 
 <div id="table-container">
     <div class="row mt-3 table-header">
-        <div class="col-3"><a href="#" id="all_toggle">-</a> Database | Table name</div>
-        <div class="col-9">Column | Type | Description</div>
+        <div class="col-3"><a href="#" id="all_toggle">&#x2B9F</a> Database | Table name</div>
+        <div class="col-9">Table description<br />Column | Type | Description</div>
     </div>
-{% for table_name, columns in tables.items() %}
+{% for table_name, details in tables.items() %}
 <div id="{{ table_name }}" class="row mt-3 table-data">
   <div class="col-3">
-    <p>
-        <a href="#" id="toggle_{{ table_name }}">-</a>
+    <p class="table-name">
+        <a href="#" id="toggle_{{ table_name }}">&#x2B9F</a>
         {{ table_name }}
     </p>
   </div>
   <div class="col-9">
+    <p class="table-description">{{ details.description }}</p>
     <div class="column-data-section" id="columns_{{ table_name }}">
-    {% for column in columns %}
+    {% for column in details.columns %}
       <div class="row mt-3 column-data">
         <div class="col-3">
           <p>
@@ -69,16 +70,20 @@
     <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
     <script src="{{ url_for('static', filename='js/render_vis.js') }}"></script>
     <script>
+        collapsed_char = '\u2B9E';
+        expanded_char = '\u2B9F';
+
+
         expand_all = function() {
             $("div[id^=columns_]").css("display", "block");
-            $("a[id^=toggle_]").text("-");
-            $("a[id=all_toggle]").text("-");
+            $("a[id^=toggle_]").text(expanded_char);
+            $("a[id=all_toggle]").text(expanded_char);
         };
 
         collapse_all = function() {
             $("div[id^=columns_]").css("display", "none");
-            $("a[id^=toggle_]").text("+");
-            $("a[id=all_toggle]").text("+");
+            $("a[id^=toggle_]").text(collapsed_char);
+            $("a[id=all_toggle]").text(collapsed_char);
         };
 
         let search = new SearchProvider('.table-data');
@@ -90,19 +95,19 @@
         //toggle visibility of a single row
         $("a[id^=toggle_]").click(function(event) {
             id = ("#columns_" + $(this).attr('id').substr('toggle_'.length)).replace(".", "\\.")
-            if ($(this).text() === "+") {
+            if ($(this).text() === collapsed_char) {
                 $(id).css("display", "block");
-                $(this).text("-")
+                $(this).text(expanded_char)
             } else {
                 $(id).css("display", "none");
-                $(this).text("+")
+                $(this).text(collapsed_char)
             }
             event.preventDefault();
         });
 
         //toggle visibility of all rows
         $("a[id=all_toggle]").click(function(event) {
-            if ($(this).text() === "+") {
+            if ($(this).text() === collapsed_char) {
                 expand_all();
             } else {
                 collapse_all();

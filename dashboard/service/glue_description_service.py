@@ -48,10 +48,12 @@ class GlueDescriptionService:
         """
         try:
             glue_tables = self.client.get_tables(DatabaseName=db, MaxResults=1000)
-            glue_tables = [{'name': table['Name'], 'columns': [{'name': column['Name'],
-                                                                'description': column.get('Comment') or '',
-                                                                'type': column.get('Type')}
-                                                               for column in table['StorageDescriptor']['Columns']]} for
+            glue_tables = [{'name': table['Name'],
+                            'description': table.get('Parameters', {}).get('comment') or '',
+                            'columns': [{'name': column['Name'],
+                                         'description': column.get('Comment') or '',
+                                         'type': column.get('Type')}
+                                        for column in table['StorageDescriptor']['Columns']]} for
                            table in glue_tables['TableList']]
             glue_tables = [t for t in glue_tables if t['name'] in tables]
             return sorted(glue_tables, key=lambda k: k['name'])
@@ -63,7 +65,7 @@ class GlueDescriptionService:
     def get_table_descriptions(self):
         """
         Returns a dict of key = 'db_name.table_name' and
-        value = list of column dicts with name, type and description fields
+        value = dict with table description and list of column dicts with name, type and description fields
         """
         futures = list()
         with GlueTimer(self.logger):
@@ -73,6 +75,6 @@ class GlueDescriptionService:
             result = dict()
             for db, tables in futures:
                 for table in tables.result():
-                    result['{}.{}'.format(db, table['name'])] = table['columns']
+                    result['{}.{}'.format(db, table['name'])] = table
 
         return result

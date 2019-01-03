@@ -59,10 +59,10 @@ COMPANY_NAME = 'ACME'
 EXTRA_ACTIVE = False
 EXTRA_TAB = os.environ.get('EXTRA_TAB') or 'Extra'
 
-# Set to true to display a tab with table column descriptions. This also requires a service which provides these descriptions
+# Set to true to display a tab with table descriptions. This also requires a service which provides these descriptions
 # The default GlueDescriptionService implementation fetches them from AWS Glue column comments
-COLUMN_DESCRIPTION_ACTIVE = False
-COLUMN_DESCRIPTION_SERVICE = 'dashboard.service.glue_description_service..GlueDescriptionService'
+TABLE_DESCRIPTION_ACTIVE = False
+TABLE_DESCRIPTION_SERVICE = 'dashboard.service.glue_description_service.GlueDescriptionService'
 GLUE_REGION_NAME = 'us-east-1'
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
