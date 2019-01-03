@@ -61,13 +61,14 @@ class TableDataProvider:
             output_tables[table['id']] = Table(**table)
         return output_tables
 
-    def __init__(self, airflow, influx, prometheus, tables, logger):
+    def __init__(self, airflow, influx, prometheus, tables, logger, config):
         self.airflow = airflow
         self.influx = influx
         self.prometheus = prometheus
         self.tables = TableDataProvider._process_input_tables(tables)
         self.logger = logger
         self.influx_client_executor = ThreadPoolExecutor(max_workers=4) if self.influx else None
+        self.config = config
 
     def get_tables(self):
         return list(self.tables.values())
@@ -170,6 +171,7 @@ class TableDataProvider:
                    'counts': row_counts,
                    'load_duration_seconds': duration,
                    'active_alerts': self.active_alerts_for_table(table.db, table.name, alerts),
+                   'link_descriptions': self.config['TABLE_DESCRIPTION_ACTIVE'],
                    'state': state}
 
     def list(self, gather_counts=True):

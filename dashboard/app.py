@@ -18,6 +18,7 @@ from dashboard.model.influxdb_data import InfluxDBData
 from dashboard.model.prometheus_data import PrometheusData
 from dashboard.model.tables_data import TableDataProvider
 from dashboard.model.reports_data import ReportsDataProvider
+from dashboard.model.description_data import DescriptionData
 from dashboard.models import ExtraEtl
 
 
@@ -87,10 +88,14 @@ def create_app(settings_override=None):
     extra_etls = [ExtraEtl(**etl) for etl in extra_etls_file] if extra_etls_file else None
 
     app.table_data_provider = TableDataProvider(
-        app.airflow_data_provider, app.influx_data_provider, app.prometheus_data_provider, tables, app.logger) if tables else None
+        app.airflow_data_provider, app.influx_data_provider,
+        app.prometheus_data_provider, tables, app.logger, app.config) if tables else None
 
     app.etl_data_provider = EtlDataProvider(
         app.config, extra_etls, app.airflow_data_provider, app.table_data_provider)
+
+    app.description_data_provider = DescriptionData(
+        app.config, app.logger, tables) if app.config.get('TABLE_DESCRIPTION_ACTIVE') else None
 
     app.report_data_provider = ReportsDataProvider(
         app.airflow_data_provider, reports['reports']

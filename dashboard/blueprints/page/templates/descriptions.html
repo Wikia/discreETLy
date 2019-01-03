@@ -1,0 +1,118 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}Table {% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Tables dashboard</li>
+{%  endblock %}
+
+{% block body %}
+
+<link href="{{ url_for('static', filename='css/descriptions.css')}}" rel="stylesheet">
+
+<div id="tooling">
+        <div id="search">
+                <input placeholder="&#x1F50D; Search" />
+                <div id="clear-search-container">
+                    <p id="clear-search">&times;</p>
+                </div>
+            </div>
+</div>
+
+<div id="table-container">
+    <div class="row mt-3 table-header">
+        <div class="col-3"><a href="#" id="all_toggle">&#x2B9F</a> Database | Table name</div>
+        <div class="col-9">Table description<br />Column | Type | Description</div>
+    </div>
+{% for table_name, details in tables.items() %}
+<div id="{{ table_name }}" class="row mt-3 table-data">
+  <div class="col-3">
+    <p class="table-name">
+        <a href="#" id="toggle_{{ table_name }}">&#x2B9F</a>
+        {{ table_name }}
+    </p>
+  </div>
+  <div class="col-9">
+    <p class="table-description">{{ details.description }}</p>
+    <div class="column-data-section" id="columns_{{ table_name }}">
+    {% for column in details.columns %}
+      <div class="row mt-3 column-data">
+        <div class="col-3">
+          <p>
+              {{ column.name }}
+          </p>
+        </div>
+        <div class="col-3">
+          <p>
+              {{ column.type }}
+          </p>
+        </div>
+        <div class="col-3">
+          <p>
+              {{ column.description }}
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}
+
+{% block charts %}
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/render_vis.js') }}"></script>
+    <script>
+        collapsed_char = '\u2B9E';
+        expanded_char = '\u2B9F';
+
+
+        expand_all = function() {
+            $("div[id^=columns_]").css("display", "block");
+            $("a[id^=toggle_]").text(expanded_char);
+            $("a[id=all_toggle]").text(expanded_char);
+        };
+
+        collapse_all = function() {
+            $("div[id^=columns_]").css("display", "none");
+            $("a[id^=toggle_]").text(collapsed_char);
+            $("a[id=all_toggle]").text(collapsed_char);
+        };
+
+        let search = new SearchProvider('.table-data');
+        search.onSearchPhraseChanged = expand_all;
+        search.main();
+
+        window.onload = checkHighlight;
+
+        //toggle visibility of a single row
+        $("a[id^=toggle_]").click(function(event) {
+            id = ("#columns_" + $(this).attr('id').substr('toggle_'.length)).replace(".", "\\.")
+            if ($(this).text() === collapsed_char) {
+                $(id).css("display", "block");
+                $(this).text(expanded_char)
+            } else {
+                $(id).css("display", "none");
+                $(this).text(collapsed_char)
+            }
+            event.preventDefault();
+        });
+
+        //toggle visibility of all rows
+        $("a[id=all_toggle]").click(function(event) {
+            if ($(this).text() === collapsed_char) {
+                expand_all();
+            } else {
+                collapse_all();
+            }
+            event.preventDefault();
+        });
+      </script>
+{% endblock %}

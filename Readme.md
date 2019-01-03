@@ -97,7 +97,7 @@ Let's dissect this command option by option:
 If some of the configuration options are already available through `settings.py` file the command for running the application can be significantly abbreviated (from project root folder):
 
 ```bash
-docker run --rm -v $(pwd):/app -p 8000:8000 discretely:latest
+docker run --rm -v $(pwd):/app -p 8000:8000 fandom/discreetly:latest
 ```
 
 Remember to use docker image name and version provided during `build` stage.
