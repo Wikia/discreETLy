@@ -23,7 +23,7 @@
 
 <div id="table-container">
     <div class="row mt-3 table-header">
-        <div class="col-3"><a href="#" id="all_toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
+        <div class="col-3"><a href="#" id="all_toggle" class="toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
             Database | Table name
         </div>
         <div class="col-9">Table description<br />Column | Type | Description</div>
@@ -32,7 +32,7 @@
 <div id="{{ table_name }}" class="row mt-3 table-data">
   <div class="col-3">
     <p class="table-name">
-        <a href="#" id="toggle_{{ table_name }}"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
+        <a href="#" id="toggle_{{ table_name }}" class="toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
         {{ table_name }}
     </p>
   </div>
