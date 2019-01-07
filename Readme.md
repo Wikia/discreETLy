@@ -70,6 +70,13 @@ In order to display information related to any external ETLs there are some addi
 - providing a custom jinja template named `extra.html` in `dashboard/blueprints/extra/templates`. An example of such template is available [here](examples/extra.html),
 - providing custom logic for data processing in `dashboard/blueprints/extra/extra.py` method `extra_etl` to process and enrich the data.
 
+
+#### Table descriptions
+
+The table descriptions tab displays table and column descriptions (comments). This can be useful for stakeholders to better understand your data structure and search for particular information. The default implementation takes them from AWS glue which stores comments added during table creation. Since not all tables have to have comments provided, this tab is fully optional.
+ 
+It's possible to set a custom data provider which reads the table descriptions from a different source than AWS glue. This is controlled by the TABLE_DESCRIPTION_SERVICE setting. 
+
 ## Running locally
 
 See: https://hub.docker.com/r/fandom/discreetly/

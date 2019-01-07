@@ -23,3 +23,7 @@
 .column-data-section {
 	display: block;
 }
+
+a.toggle:hover {
+   text-decoration: none;
+}
