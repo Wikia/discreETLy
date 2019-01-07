@@ -32,7 +32,7 @@
 <div id="{{ table_name }}" class="row mt-3 table-data">
   <div class="col-3">
     <p class="table-name">
-        <a href="#" id="toggle_{{ table_name }}" class="toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
+        <a href="#" id="toggle_{{ table_name }}" class="toggle row-toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
         {{ table_name }}
     </p>
   </div>
@@ -72,30 +72,30 @@
     <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
     <script src="{{ url_for('static', filename='js/render_vis.js') }}"></script>
     <script>
-        collapsed_char = '<span class="cui-chevron-right" aria-hidden="true"></span>';
-        expanded_char = '<span class="cui-chevron-bottom" aria-hidden="true"></span>';
+        const collapsed_char = '<span class="cui-chevron-right" aria-hidden="true"></span>';
+        const expanded_char = '<span class="cui-chevron-bottom" aria-hidden="true"></span>';
 
 
         expand_all = function() {
-            $("div[id^=columns_]").css("display", "block");
-            $("a[id^=toggle_]").html(expanded_char);
+            $(".column-data-section").css("display", "block");
+            $(".row-toggle").html(expanded_char);
             $("a[id=all_toggle]").html(expanded_char);
         };
 
         collapse_all = function() {
-            $("div[id^=columns_]").css("display", "none");
-            $("a[id^=toggle_]").html(collapsed_char);
+            $(".column-data-section").css("display", "none");
+            $(".row-toggle").html(collapsed_char);
             $("a[id=all_toggle]").html(collapsed_char);
         };
 
-        let search = new SearchProvider('.table-data');
+        const search = new SearchProvider('.table-data');
         search.onSearchPhraseChanged = expand_all;
         search.main();
 
         window.onload = checkHighlight;
 
         //toggle visibility of a single row
-        $("a[id^=toggle_]").click(function(event) {
+        $(".row-toggle").click(function(event) {
             id = ("#columns_" + $(this).attr('id').substr('toggle_'.length)).replace(".", "\\.")
             if ($(this).html() === collapsed_char) {
                 $(id).css("display", "block");
