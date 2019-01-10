@@ -4,6 +4,13 @@
     margin-left: 0;
     margin-right: 0;
     background-color: #dee7e5;
+    word-wrap: break-word;
+}
+
+#legend {
+    vertical-align: middle;
+    padding-left: 2rem;
+    padding-top: .5rem;
 }
 
 .column-data:nth-child(odd) {
@@ -21,7 +28,6 @@
 }
 
 .column-header-section {
-	display: block;
     background-color: #c7cfce;
 }
 

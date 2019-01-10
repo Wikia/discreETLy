@@ -19,6 +19,9 @@
                 <p id="clear-search">&times;</p>
             </div>
         </div>
+        <div id="legend">
+            Legend: <span class="cui-layers" aria-hidden="true"></span> Partition column
+        </div>
     </div>
 
     <div id="table-container">
@@ -50,7 +53,7 @@
                     </div>
                     {% for column in details.columns %}
                         <div class="row column-data">
-                            <div class="col-3">{{ column.name }}</div>
+                            <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
                             <div class="col-3">{{ column.type }}</div>
                             <div class="col-6">{{ column.description }}</div>
                         </div>
