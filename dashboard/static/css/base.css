@@ -13,7 +13,6 @@ img:hover {
 }
 
 #tooling {
-    width: 15rem;
     display: inline-flex;
     justify-content: space-between;
     flex-direction: row;
@@ -33,11 +32,11 @@ img:hover {
 #search {
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 12rem;
     background-color: #fff;
     margin-bottom: .5rem;
     border-radius: .3rem;
-    border: 1px dotted #999;
+    border: 1px solid #999;
 }
 
 #search input {

@@ -48,15 +48,26 @@ class GlueDescriptionService:
         """
         try:
             glue_tables = self.client.get_tables(DatabaseName=db, MaxResults=1000)
-            glue_tables = [{'name': table['Name'],
-                            'description': table.get('Parameters', {}).get('comment') or '',
-                            'columns': [{'name': column['Name'],
-                                         'description': column.get('Comment') or '',
-                                         'type': column.get('Type')}
-                                        for column in table['StorageDescriptor']['Columns']]} for
-                           table in glue_tables['TableList']]
-            glue_tables = [t for t in glue_tables if t['name'] in tables]
-            return sorted(glue_tables, key=lambda k: k['name'])
+            result_tables = []
+            for table in glue_tables['TableList']:
+                columns = [{'name': column['Name'],
+                            'description': column.get('Comment', ''),
+                            'is_partition': False,
+                            'type': column.get('Type')}
+                           for column in table['StorageDescriptor']['Columns']]
+
+                columns.extend([{'name': column['Name'],
+                                 'description': column.get('Comment', ''),
+                                 'is_partition': True,
+                                 'type': column.get('Type')}
+                                for column in table.get('PartitionKeys', [])])
+
+                result_tables.append({'name': table['Name'],
+                                      'description': table.get('Parameters', {}).get('comment', ''),
+                                      'columns': columns})
+
+                result_tables = [t for t in result_tables if t['name'] in tables]
+            return sorted(result_tables, key=lambda k: k['name'])
         except Exception as e:
             self.logger.warn('Exception caught while trying to get table descriptions', e)
             return []

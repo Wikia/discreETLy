@@ -6,64 +6,62 @@
 {% block nav %}
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item active">Tables dashboard</li>
-{%  endblock %}
+{% endblock %}
 
 {% block body %}
 
-<link href="{{ url_for('static', filename='css/descriptions.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/descriptions.css') }}" rel="stylesheet">
 
-<div id="tooling">
+    <div id="tooling">
         <div id="search">
-                <input placeholder="&#x1F50D; Search" />
-                <div id="clear-search-container">
-                    <p id="clear-search">&times;</p>
+            <input placeholder="&#x1F50D; Search"/>
+            <div id="clear-search-container">
+                <p id="clear-search">&times;</p>
+            </div>
+        </div>
+        <div id="legend">
+            Legend: <span class="cui-layers" aria-hidden="true"></span> Partition column
+        </div>
+    </div>
+
+    <div id="table-container">
+        <div class="row mt-3 table-header">
+            <div class="col-3">
+                <span id="all-toggle" class="toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></span>
+                Database | Table name
+            </div>
+            <div class="col-9">Description</div>
+        </div>
+        {% for table_name, details in tables.items() %}
+            <div id="{{ table_name }}" class="table-data">
+                <div id="header-{{ table_name }}" class="row column-header-section">
+                    <div class="col-3">
+                        <span style="white-space: nowrap;">
+                            <span id="toggle-{{ table_name }}" class="toggle row-toggle">
+                                <span class="cui-chevron-bottom" aria-hidden="true"></span>
+                            </span>
+                            {{ table_name }}
+                        </span>
+                    </div>
+                    <div class="col-9">{{ details.description }}</div>
+                </div>
+                <div class="row column-data-section" id="columns_{{ table_name }}">
+                    <div class="row table-columns-header">
+                        <div class="col-3">Column</div>
+                        <div class="col-3">Type</div>
+                        <div class="col-6">Description</div>
+                    </div>
+                    {% for column in details.columns %}
+                        <div class="row column-data">
+                            <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
+                            <div class="col-3">{{ column.type }}</div>
+                            <div class="col-6">{{ column.description }}</div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-</div>
-
-<div id="table-container">
-    <div class="row mt-3 table-header">
-        <div class="col-3"><a href="#" id="all_toggle" class="toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
-            Database | Table name
-        </div>
-        <div class="col-9">Table description<br />Column | Type | Description</div>
+        {% endfor %}
     </div>
-{% for table_name, details in tables.items() %}
-<div id="{{ table_name }}" class="row mt-3 table-data">
-  <div class="col-3">
-    <p class="table-name">
-        <a href="#" id="toggle_{{ table_name }}" class="toggle row-toggle"><span class="cui-chevron-bottom" aria-hidden="true"></span></a>
-        {{ table_name }}
-    </p>
-  </div>
-  <div class="col-9">
-    <p class="table-description">{{ details.description }}</p>
-    <div class="column-data-section" id="columns_{{ table_name }}">
-    {% for column in details.columns %}
-      <div class="row mt-3 column-data">
-        <div class="col-3">
-          <p>
-              {{ column.name }}
-          </p>
-        </div>
-        <div class="col-3">
-          <p>
-              {{ column.type }}
-          </p>
-        </div>
-        <div class="col-3">
-          <p>
-              {{ column.description }}
-          </p>
-        </div>
-      </div>
-    {% endfor %}
-    </div>
-  </div>
-</div>
-{% endfor %}
-
-</div>
 
 {% endblock %}
 
@@ -76,16 +74,16 @@
         const expanded_char = '<span class="cui-chevron-bottom" aria-hidden="true"></span>';
 
 
-        expand_all = function() {
+        expand_all = function () {
             $(".column-data-section").css("display", "block");
             $(".row-toggle").html(expanded_char);
-            $("a[id=all_toggle]").html(expanded_char);
+            $("#all-toggle").html(expanded_char);
         };
 
-        collapse_all = function() {
+        collapse_all = function () {
             $(".column-data-section").css("display", "none");
             $(".row-toggle").html(collapsed_char);
-            $("a[id=all_toggle]").html(collapsed_char);
+            $("#all-toggle").html(collapsed_char);
         };
 
         const search = new SearchProvider('.table-data');
@@ -95,26 +93,26 @@
         window.onload = checkHighlight;
 
         //toggle visibility of a single row
-        $(".row-toggle").click(function(event) {
-            id = ("#columns_" + $(this).attr('id').substr('toggle_'.length)).replace(".", "\\.")
-            if ($(this).html() === collapsed_char) {
-                $(id).css("display", "block");
-                $(this).html(expanded_char)
+        $(".column-header-section").click(function (event) {
+            const tableName = $(this).attr('id').substr('header-'.length).replace(".", "\\.");
+            const idColumns = "#columns_" + tableName;
+            const idToggle = "#toggle-" + tableName;
+            if ($(idToggle).html() === collapsed_char) {
+                $(idColumns).css("display", "block");
+                $(idToggle).html(expanded_char)
             } else {
-                $(id).css("display", "none");
-                $(this).html(collapsed_char)
+                $(idColumns).css("display", "none");
+                $(idToggle).html(collapsed_char)
             }
-            event.preventDefault();
         });
 
         //toggle visibility of all rows
-        $("a[id=all_toggle]").click(function(event) {
-            if ($(this).html() === collapsed_char) {
+        $(".table-header").click(function (event) {
+            if ($('#all-toggle').html() === collapsed_char) {
                 expand_all();
             } else {
                 collapse_all();
             }
-            event.preventDefault();
         });
-      </script>
+    </script>
 {% endblock %}
