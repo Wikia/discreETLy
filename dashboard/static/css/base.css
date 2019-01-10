@@ -37,7 +37,7 @@ img:hover {
     background-color: #fff;
     margin-bottom: .5rem;
     border-radius: .3rem;
-    border: 1px dotted #999;
+    border: 1px solid #999;
 }
 
 #search input {
