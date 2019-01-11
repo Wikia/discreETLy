@@ -11,8 +11,9 @@ class InfluxDBData:
         return list(self.influx.query(query).get_points())
 
     def __get_table_sql(self, table, days):
-        query = f'SELECT records FROM "emr_stats_{table.db}_{table.name}" ' \
-                f'WHERE time >= now() - {days}d ' \
+        period_filter = f' AND period_id = \'{table.period.id}\' ' if table.period else ''
+        query = f'SELECT * FROM "emr_stats_{table.db}_{table.name}" ' \
+                f'WHERE time >= now() - {days}d {period_filter}' \
                 f'ORDER BY time ASC'
         return query
 
