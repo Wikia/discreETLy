@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from flask import Blueprint
 from flask import current_app as app
@@ -10,17 +9,6 @@ from dashboard.utils import clean_dag_id
 from dashboard.utils.vis import tree_diagram
 
 page = Blueprint('page', __name__, template_folder='templates')
-
-
-def oauth_login_required():
-    if 'user' not in session and request.path not in ['/login', '/healthcheck']:
-        session['next'] = request.url
-        return redirect(url_for('page.login'))
-    elif 'user' not in session and 'GOOGLE_CLIENT_ID' not in app.config:
-        session['user'] = { 'picture': 'https://www.gravatar.com/avatar/94d093eda664addd6e450d7e9881bcad?s=32&d=identicon&r=PG'}
-        return
-
-page.before_request(oauth_login_required)
 
 @page.route('/')
 def index():
@@ -73,39 +61,6 @@ def etl_details(dag_id, execution_date):
     ))
 
 
-@page.route('/tables')
-def tables_dashboard():
-    if app.table_data_provider:
-        tables = app.table_data_provider.list()
-        return render_template('table_dashboard.html', tables=tables)
-    else:
-        return render_template('no_config.html', filename='tables.yaml')
-
-
-@page.route('/tables/<string:table_name>')
-def table_graph(table_name):
-    history = app.table_data_provider.history(table_name)
-    return render_template('table.html', name=table_name, counts=history)
-
-
-@page.route('/reports')
-def reports_dashboard():
-    if app.report_data_provider:
-        return render_template('reports.html',
-                            reports=app.report_data_provider.reports
-                            )
-    else:
-        return render_template('no_config.html', filename='reports.yaml')
-
-
-@page.route('/descriptions')
-def extra_dashboard():
-    if app.config['TABLE_DESCRIPTION_ACTIVE']:
-        return render_template('descriptions.html', tables=app.description_data_provider.tables())
-    else:
-        return render_template('no_config.html', filename='TABLE_DESCRIPTION_SERVICE')
-
-
 @page.app_template_filter()
 def describe_seconds(seconds):
     m, s = divmod(int(seconds), 60)
@@ -116,11 +71,6 @@ def describe_seconds(seconds):
     if h > 0:
         result = "{}h {}".format(h, result)
     return result
-
-
-@page.context_processor
-def global_vars():
-    return {'now': datetime.now()}
 
 
 @page.route('/healthcheck')

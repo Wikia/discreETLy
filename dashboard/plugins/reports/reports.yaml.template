@@ -5,7 +5,5 @@ reports:
       owner: John Rambo
       processing_times: '04:00 UTC'
       tables:
-        - id: some_table
-          tid: some_table
+        - id: some_db.some_table
           name: Descriptive Name
-          dag: my_dag

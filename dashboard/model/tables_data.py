@@ -171,7 +171,6 @@ class TableDataProvider:
                    'counts': row_counts,
                    'load_duration_seconds': duration,
                    'active_alerts': self.active_alerts_for_table(table.db, table.name, alerts),
-                   'link_descriptions': self.config['TABLE_DESCRIPTION_ACTIVE'],
                    'state': state}
 
     def list(self, gather_counts=True):

@@ -23,11 +23,11 @@ class GlueTimer:
 
 class GlueDescriptionService:
 
-    def __init__(self, logger, config, tables):
+    def __init__(self, logger, config, tables, region_name, aws_access_key_id, aws_secret_access_key):
         self.client = boto3.client('glue',
-                                   region_name=config['GLUE_REGION_NAME'],
-                                   aws_access_key_id=config['AWS_ACCESS_KEY_ID'],
-                                   aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'])
+                                   region_name=region_name,
+                                   aws_access_key_id=aws_access_key_id,
+                                   aws_secret_access_key=aws_secret_access_key)
         self.logger = logger
         self.db_tables = self.get_db_tables(tables)
 
@@ -35,8 +35,8 @@ class GlueDescriptionService:
     @staticmethod
     def get_db_tables(tables):
         result = defaultdict(lambda: list())
-        for table in tables:
-            result[table['db']].append(table['name'])
+        for table in tables.values():
+            result[table.db].append(table.name)
         return result
 
     def get_tables_for_db(self, db, tables):

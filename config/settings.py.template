@@ -51,18 +51,18 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or '8FF5F14DC7DBF90FDE769C3BF7FDCFA16F
 # This name will be displayed on the header of the dashboard
 COMPANY_NAME = 'ACME'
 
-# Extra tab
-# Different ETLs external to Airflow can be defined in `extra_etl.yaml` files. In order to align the dashboard UI with etl.yaml a distinct name can be defined here.
-# The name (EXTRA_TAB) will be visible in dashboard UI as an additional view accessible from top menu, e.g. if you define the name to `Streaming` it will be visible as one of the views.
-# By default, this view is switched off (the users won't see it in the dashboard, although endpoint is active). If you want to m use this view change EXTRA_ACTIVE to True.
-# Remember, that the html file needs to be provided for this endpoint as `extra.html` in `dashboard/blueprints/tamplates/`. The dashboard uses standard jinja templating engine.
-EXTRA_ACTIVE = False
-EXTRA_TAB = os.environ.get('EXTRA_TAB') or 'Extra'
+# Plugins
+# DiscreETLy supports views/functionalities customization with plugin system. The following list
+# describes what plugins are enabled. They are stored in dashboard/plugins directory with the corresponding
+# documentation.
+ENABLED_PLUGINS= ['tables', 'reports']
 
-# Set to true to display a tab with table descriptions. This also requires a service which provides these descriptions
-# The default GlueDescriptionService implementation fetches them from AWS Glue column comments
-TABLE_DESCRIPTION_ACTIVE = False
-TABLE_DESCRIPTION_SERVICE = 'dashboard.service.glue_description_service.GlueDescriptionService'
-GLUE_REGION_NAME = 'us-east-1'
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+# Plugin-specific configuration: table_descriptions
+# The following lines enable AWS Glue Data catalogue as a source of the table descritpions. This dataprovider
+# requires AWS region, access key and secret key to be provided.
+#TABLE_DESCRIPTION_SERVICE = 'dashboard.plugins.table_descriptions.dataproviders.GlueDescriptionService'
+#TABLE_DESCRIPTION_SERVICE_PARAMS = {
+#    'region_name': 'us-east-1',
+#    'aws_access_key_id': '<aws_access_key_id>',
+#    'aws_secret_access_key': '<aws_secret_access_key>'
+#}

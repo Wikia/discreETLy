@@ -23,59 +23,28 @@ file they will be simply ignored while running the app.
 If environment is not specified, the application is run in DEBUG mode, so any errors will be reported on dashboard UI. If environment variable `ENV_VAR_PREFIX` is set to `PROD` or appropriate
 option is changed in `settings.py` file the application will serve `500` errors as defined in dashboard [template](dashboard/blueprints/page/templates/500.html).
 
-### Configuring dashboard views
-
-#### Tables
+## Views & Plugins
 
 The basic configuration file is enough to run the dashboard, however, in order to take
 full advantage of dashboard features and functionality there are some additional steps
-that need to be performed.
+that need to be performed. By default only **ETL** tab presents valuable information,
+allowing users to monitor progress of particular Airflow DAGs and tasks. 
+But you can easily enable plugins that configure new views. All plugins reside in
+[plugins directory](dashboard/plugins) and are enabled if the plugin name is present
+in the `ENABLED_PLUGINS` in the `settings.py`.
 
-The dashboard allows the users to monitor the progress of particular Airflow DAGs and
-tasks, moreover, it can also show the status of tasks in relation to tables they populate
-with data.
+You can find more details on what each plugin provides and how to configure it 
+in the following docs:
 
-However, Airflow does not contain the mapping between tables (Hive, database) and that is
-why a mapping needs to be provided to **discreETLy**. A mapping can be defined in
-`tables.yaml` file available in `config` folder. Each mapping consists of a few pieces of information:
+* [Tables](dashboard/plugins/tables/README.md) - tables list: status monitoring and
+  records count
+* [Reports](dashboard/plugins/reports/README.md) - monitoring of the reports external 
+  to the Aiflow DAGs (like Tableu, Mode)
+* [Streaming](dashboard/plugins/streaming/README.md) - view on non-Airflow based
+  streaming applications
+* [Table Descritpions](dashboard/plugins/table_descriptions/README.md) - table and
+  columns description
 
-- `name` - the name of the table in a database
-- `db` - a database definition (can be a namespace)
-- `uses` - a table that provides data for the task populating currently describe table (helps if there are dependencies between tables)
-- `dag_id` - id of a DAG that contains the task required for the mapping
-- `task_id` - id of the task that populates the table
-
-The application will automatically ingest the definition of the tables and map them to particular tasks.
-
-#### Reports
-
-The dashboard allows to monitor sets of tables that constitute to a report that is maintained by DE team or stakeholders.
-
-The definition of the set of tables and general report metadata can be
-found in `reports.yaml` file available in `config` folder.
-
-Please, refer to `report.yaml.template` to learn more about particular options that
-need to be provided.
-
-#### External ETLs
-
-Not all ETLs are always defined through Airflow. Data engineering field is rich and
-complex and requires a plethora of tools to ensure high quality of operations. Should there be any ETLs defined outside of Airflow that need to be maintained and
-monitored they can be defined in `extra_etl.yaml` file available in `config` folder. Due to the fact that it is impossible to predict the availability of metadata for
-those definitions separate links need to be provided to point to external monitoring systems.
-
-In order to display information related to any external ETLs there are some additional steps required:
-
-- setting `EXTRA_ACTIVE` option in configuration to true,
-- providing a custom jinja template named `extra.html` in `dashboard/blueprints/extra/templates`. An example of such template is available [here](examples/extra.html),
-- providing custom logic for data processing in `dashboard/blueprints/extra/extra.py` method `extra_etl` to process and enrich the data.
-
-
-#### Table descriptions
-
-The table descriptions tab displays table and column descriptions (comments). This can be useful for stakeholders to better understand your data structure and search for particular information. The default implementation takes them from AWS glue which stores comments added during table creation. Since not all tables have to have comments provided, this tab is fully optional.
- 
-It's possible to set a custom data provider which reads the table descriptions from a different source than AWS glue. This is controlled by the TABLE_DESCRIPTION_SERVICE setting. 
 
 ## Running locally
 

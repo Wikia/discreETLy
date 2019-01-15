@@ -4,9 +4,8 @@ from dashboard.models import EtlWithProgress
 
 class EtlDataProvider:
 
-    def __init__(self, config,  extra_etls, airflow_data_provider, tables_data_provider):
+    def __init__(self, config, airflow_data_provider, tables_data_provider):
         self.config = config
-        self.extra_etls = extra_etls
         self.airflow_data_provider = airflow_data_provider
         self.tables_data_provider = tables_data_provider
 
