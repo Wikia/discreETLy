@@ -34,7 +34,7 @@ class GlueDescriptionService:
 
     @staticmethod
     def get_db_tables(tables):
-        result = defaultdict(lambda: list())
+        result = defaultdict(list)
         for table in tables.values():
             result[table.db].append(table.name)
         return result
