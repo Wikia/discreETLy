@@ -4,4 +4,7 @@ The table descriptions tab displays table and column descriptions (comments). Th
  
 It's possible to set a custom data provider which reads the table descriptions from a different source than AWS glue. This is controlled by the `TABLE_DESCRIPTION_SERVICE` setting. 
 
+Table descriptions plugin requires valid [tables.yaml](../tables/tables.yaml.template) to be
+provided to provide a subset of the tables to be displayed.
+
 ![table descriptions](table_descriptions.png)

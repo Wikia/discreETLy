@@ -55,7 +55,7 @@ COMPANY_NAME = 'ACME'
 # DiscreETLy supports views/functionalities customization with plugin system. The following list
 # describes what plugins are enabled. They are stored in dashboard/plugins directory with the corresponding
 # documentation.
-ENABLED_PLUGINS= ['tables', 'reports']
+ENABLED_PLUGINS= ['tables', 'hello_world']
 
 # Plugin-specific configuration: table_descriptions
 # The following lines enable AWS Glue Data catalogue as a source of the table descritpions. This dataprovider

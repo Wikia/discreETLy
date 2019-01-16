@@ -24,7 +24,7 @@ def get_descriptions(cache_ttl=300):
 
 @plugin.route('/')
 def index():
-    if not 'TABLE_DESCRIPTION_SERVICE' in app.config:
+    if not 'TABLE_DESCRIPTION_SERVICE' in app.config or app.table_data_provider is None:
         return render_template('no_config.html', filename='TABLE_DESCRIPTION_SERVICE')
 
     return render_template('table_descriptions/index.html', tables=get_descriptions())

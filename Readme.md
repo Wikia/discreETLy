@@ -44,6 +44,7 @@ in the following docs:
   streaming applications
 * [Table Descritpions](dashboard/plugins/table_descriptions/README.md) - table and
   columns description
+* [Hello World](dashboard/plugins/hello_world/README.md) - DiscreETLy Developers Docs
 
 
 ## Running locally
