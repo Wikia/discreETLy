@@ -95,8 +95,7 @@ def create_app(settings_override=None):
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
 
-    from datetime import datetime
-    app.context_processor(lambda: {'now': datetime.now(), 'plugins': plugins})
+    app.context_processor(lambda: {'now': datetime.datetime.now(), 'plugins': plugins})
 
     return app
 
