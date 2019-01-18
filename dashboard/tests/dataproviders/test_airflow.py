@@ -36,18 +36,18 @@ def test_get_dag_tasks_failure_wrong_date():
 
 def test_technical_dag_is_hidden():
     status = airflow.get_dags_status()
-    #assert 'heartbeat' not in [dag['name'] for dag in status]
+    assert 'heartbeat' not in [dag['name'] for dag in status]
     task_instances = set([task.dag_name for task in airflow.get_newest_task_instances()])
     assert 'heartbeat' not in task_instances
 
 def test_paused_dag_is_hidden():
     status = airflow.get_dags_status()
-    #assert 'paused_dag' not in [dag['name'] for dag in status]
+    assert 'paused_dag' not in [dag['name'] for dag in status]
     task_instances = set([task.dag_name for task in airflow.get_newest_task_instances()])
     assert 'paused_dag' not in task_instances
 
 def test_inactive_dag_is_hidden():
     status = airflow.get_dags_status()
-    #assert 'inactive_dag' not in [dag['name'] for dag in status]
+    assert 'inactive_dag' not in [dag['name'] for dag in status]
     task_instances = set([task.dag_name for task in airflow.get_newest_task_instances()])
     assert 'inactive_dag' not in task_instances
