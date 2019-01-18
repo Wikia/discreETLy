@@ -13,8 +13,7 @@ def index():
     if not streams_definition:
         return render_template('no_config.html', filename='streaming.yaml')
 
-    tables = app.table_data_provider.list()
-    streams = [dict(active_alerts = next(table['active_alerts'] for table in tables if table['id'] == stream['table']), **stream)
-                     for stream in streams_definition]
+    alerts = [table['id'] for table in app.table_data_provider.list() if table['active_alerts']]
+    streams = [dict(active_alerts = stream['table'] in alerts, **stream) for stream in streams_definition]
                      
     return render_template('streaming/index.html', streams=streams)

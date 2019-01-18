@@ -1,3 +1,25 @@
+CREATE TABLE `dag` (
+  `dag_id` varchar(250) NOT NULL,
+  `is_paused` tinyint(1) DEFAULT NULL,
+  `is_subdag` tinyint(1) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT NULL,
+  `last_scheduler_run` timestamp(6) NULL DEFAULT NULL,
+  `last_pickled` timestamp(6) NULL DEFAULT NULL,
+  `last_expired` timestamp(6) NULL DEFAULT NULL,
+  `scheduler_lock` tinyint(1) DEFAULT NULL,
+  `pickle_id` int(11) DEFAULT NULL,
+  `fileloc` varchar(2000) DEFAULT NULL,
+  `owners` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`dag_id`)
+);
+
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('clickstream_view_special_v2.2', 0, 1);
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('operative_data_import_v2.0', 0, 1);
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('heartbeat_v2.0', 0, 1);
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('paused_dag_v2.0', 1, 0);
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('inactive_dag_v2.0', 0, 0);
+
+
 CREATE TABLE `dag_run` (
   `id` int(11) NOT NULL,
   `dag_id` varchar(250) DEFAULT NULL,
@@ -45,6 +67,16 @@ VALUES(566, 'operative_data_import_v2.0', '2018-11-11 10:00:00.000', 'success', 
 INSERT INTO dag_run
 (id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
 VALUES(686, 'operative_data_import_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled__2018-11-12T09:00:00+00:00', 0, NULL, NULL, '2018-11-13 10:00:10.033');
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(1000, 'heartbeat_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled__2018-11-12T09:00:00+00:00', 0, NULL, NULL, '2018-11-13 10:00:10.033');
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(2000, 'paused_dag_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled__2018-11-12T09:00:00+00:00', 0, NULL, NULL, '2018-11-13 10:00:10.033');
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(3000, 'inactive_dag_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled__2018-11-12T09:00:00+00:00', 0, NULL, NULL, '2018-11-13 10:00:10.033');
+
 
 CREATE TABLE task_instance (
   task_id varchar(250) NOT NULL,
@@ -1475,3 +1507,9 @@ VALUES('tables_refresh', 'operative_data_import_v2.0', '2018-11-11 10:00:00.000'
 INSERT INTO task_instance
 (task_id, dag_id, execution_date, start_date, end_date, duration, state, try_number, hostname, unixname, job_id, pool, queue, priority_weight, operator, queued_dttm, pid, max_tries, executor_config)
 VALUES('tables_refresh', 'operative_data_import_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success', 1, 'a8d6517382cf', 'airflow', 6256, NULL, 'default', 3, 'SSHOperator', '2018-11-13 10:27:50.977', 2234, 1, 'stub');
+INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date, duration, state)
+VALUES('heartbeat', 'heartbeat_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success');
+INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date, duration, state)
+VALUES('heartbeat', 'paused_dag_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success');
+INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date, duration, state)
+VALUES('heartbeat', 'inactive_dag_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success');
