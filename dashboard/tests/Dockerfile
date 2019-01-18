@@ -7,8 +7,10 @@ RUN apt update && apt upgrade -y
 RUN apt-get -t stretch-backports -y install libsqlite3-0
 RUN pip install pytest
 
-COPY . .
+COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
+
+COPY . .
 
 CMD ["pytest"]

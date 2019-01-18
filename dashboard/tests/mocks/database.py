@@ -21,6 +21,6 @@ class SqliteService:
             cursor = self.conn.cursor()
             cursor.execute(query.replace('\n', ''))
             self.conn.commit()
-            return cursor.fetchall()
+            return [dict(item) for item in cursor.fetchall()]
         finally:
             cursor.close()

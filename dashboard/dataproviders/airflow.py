@@ -53,8 +53,9 @@ class AirflowDBDataProvider:
     def get_newest_task_instances(self):
         newest_task_instances_sql = '''
         SELECT dr.dag_id, dr.execution_date, dag_state, task_id, ti.state AS task_state, duration, start_date, end_date FROM (
-            SELECT dag_id, execution_date, state AS dag_state, ROW_NUMBER() OVER (PARTITION BY dag_id ORDER BY execution_date DESC) AS age 
-            FROM dag_run) dr 
+            SELECT dag_run.dag_id, execution_date, state AS dag_state, ROW_NUMBER() OVER (PARTITION BY dag_run.dag_id ORDER BY execution_date DESC) AS age 
+            FROM dag_run
+            JOIN dag ON dag.dag_id = dag_run.dag_id AND is_active = 1 AND is_paused = 0) dr 
         JOIN task_instance ti ON ti.dag_id = dr.dag_id AND ti.execution_date = dr.execution_date
         WHERE dr.age = 1'''.replace("\n", "")
 
@@ -66,6 +67,10 @@ class AirflowDBDataProvider:
             key = row['dag_name'] + row['task_id']
             if key in result and row['end_date'] and result[key].end_date > row['end_date']:
                 continue # duplicate with dag old version
+            
+            if row['dag_name'] in self.config.get('TECHNICAL_ETLS', set()):
+                continue # task instance from the technical ETL
+                
             result[key] = TaskInstance(**row)
 
         return list(result.values())
@@ -85,8 +90,9 @@ class AirflowDBDataProvider:
 
         latest_dags_status_sql = '''
         SELECT * FROM (
-            SELECT dag_id, state, ROW_NUMBER() OVER (PARTITION BY dag_id ORDER BY execution_date DESC) AS age 
-            FROM dag_run) dr 
+            SELECT dag.dag_id, state, ROW_NUMBER() OVER (PARTITION BY dag.dag_id ORDER BY execution_date DESC) AS age 
+            FROM dag_run
+            JOIN dag ON dag.dag_id = dag_run.dag_id AND is_active = 1 AND is_paused = 0) dr 
         WHERE age = 1'''.replace("\n", "")
         return [{
             'name': clean_dag_id(dag['dag_id']),
