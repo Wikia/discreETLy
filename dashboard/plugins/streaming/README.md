@@ -13,5 +13,7 @@ of entries with the following keys:
 
 You can find more details in the [example file](streaming.yaml.template). For the plugin
 to work the file should be named `streaming.yaml` and needs to be put in `config` directory.
+Streaming plugin requires valid [tables.yaml](../tables/tables.yaml.template) to be
+provided to match alerts for tables mentioned in `streaming.yaml`.
 
 ![streaming](streaming.png)

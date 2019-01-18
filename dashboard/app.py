@@ -3,6 +3,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import os
 import logging
 import importlib
+from datetime import datetime
 
 from flask import Flask, session, redirect, request, url_for
 from flask_sslify import SSLify
@@ -95,7 +96,7 @@ def create_app(settings_override=None):
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
 
-    app.context_processor(lambda: {'now': datetime.datetime.now(), 'plugins': plugins})
+    app.context_processor(lambda: {'now': datetime.now(), 'plugins': plugins})
 
     return app
 

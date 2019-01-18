@@ -60,9 +60,10 @@ ENABLED_PLUGINS= ['tables', 'hello_world']
 # Plugin-specific configuration: table_descriptions
 # The following lines enable AWS Glue Data catalogue as a source of the table descritpions. This dataprovider
 # requires AWS region, access key and secret key to be provided.
-#TABLE_DESCRIPTION_SERVICE = 'dashboard.plugins.table_descriptions.dataproviders.GlueDescriptionService'
-#TABLE_DESCRIPTION_SERVICE_PARAMS = {
+#TABLE_DESCRIPTIONS_SERVICE = 'dashboard.plugins.table_descriptions.dataproviders.GlueDescriptionService'
+#TABLE_DESCRIPTIONS_SERVICE_PARAMS = {
 #    'region_name': 'us-east-1',
 #    'aws_access_key_id': '<aws_access_key_id>',
 #    'aws_secret_access_key': '<aws_secret_access_key>'
 #}
+#TABLE_DESCRIPTIONS_TTL = 300 # 5 minutes is the default

@@ -17,7 +17,7 @@ def index():
 
     template_vars = {'etl_summary': dags_status_future.result()}
     if app.table_data_provider:
-        template_vars['tables'] = app.async_request_executor.submit(app.table_data_provider.list, False).result()
+        template_vars['tables'] = app.async_request_executor.submit(app.table_data_provider.list, True).result()
     
     return render_template('index.html', **template_vars)
 
