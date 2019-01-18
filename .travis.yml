@@ -1,0 +1,7 @@
+language: python
+services:
+  - docker
+install:
+  - docker build -t dashboard:tests -f dashboard/tests/Dockerfile .
+script:
+  - docker run --rm dashboard:tests
