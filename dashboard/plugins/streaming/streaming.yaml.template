@@ -1,0 +1,3 @@
+- name: friendly_name
+  link: "https://console.aws.amazon.com/kinesis/home?region=us-east-1#/streams/details?streamName=myStream&tab=monitoring"
+  table: dbname.tablename

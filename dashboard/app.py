@@ -1,54 +1,48 @@
 from concurrent.futures.thread import ThreadPoolExecutor
 
-import yaml
 import os
 import logging
+import importlib
+from datetime import datetime
 
-from flask import Flask, session, redirect
+from flask import Flask, session, redirect, request, url_for
 from flask_sslify import SSLify
 from werkzeug.debug import DebuggedApplication
 from authlib.flask.client import OAuth
 from loginpass import create_flask_blueprint, Google
+from werkzeug.contrib.cache import SimpleCache
 
 from dashboard.blueprints.page import page
-from dashboard.blueprints.extra import extra
 from dashboard.dataproviders import *
 from dashboard.service.mysql import MySQLClient
 from dashboard.model.influxdb_data import InfluxDBData
 from dashboard.model.prometheus_data import PrometheusData
 from dashboard.model.tables_data import TableDataProvider
-from dashboard.model.reports_data import ReportsDataProvider
-from dashboard.model.description_data import DescriptionData
 from dashboard.models import ExtraEtl
+from dashboard.utils import get_yaml_file_content
 
-
-TABLES_PATH = '../config/tables.yaml'
-EXTRA_ETL_PATH = '../config/extra_etl.yaml'
-REPORTS_PATH = '../config/reports.yaml'
-
-
-def get_yaml_file_content(path):
-    config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-    if os.path.exists(config_file):
-        with open(config_file, 'r') as file:
-            return yaml.load(file)
-    else:
-        return None
-
+TABLES_PATH = 'config/tables.yaml'
 
 def setup_authentication(app):
     oauth = OAuth(app)
 
-    def handle_authorize(remote, token, user_info):
+    def handle_redirects(remote, token, user_info):
         if not 'hd' in user_info or user_info['hd'] != app.config['OAUTH_DOMAIN']:
-            return redirect('/login')
+            return redirect(url_for('page.login'))
 
         session['user'] = user_info
         return redirect(session.get('next', '/'))
 
+    def ensure_user_is_authorized(app):
+        if 'user' not in session and request.path not in ['/oauth/login', '/oauth/auth', '/login', '/healthcheck']:
+            session['next'] = request.url
+            return redirect(url_for('page.login'))
+
     app.register_blueprint(
-        create_flask_blueprint(Google, oauth, handle_authorize),
+        create_flask_blueprint(Google, oauth, handle_redirects),
         url_prefix='/oauth')
+
+    app.before_request(lambda: ensure_user_is_authorized(app))
 
 
 def create_app(settings_override=None):
@@ -75,36 +69,34 @@ def create_app(settings_override=None):
         setup_authentication(app)
 
     app.register_blueprint(page)
-    app.register_blueprint(extra)
+
+    plugins = {}
+    for plugin in app.config['ENABLED_PLUGINS']:
+        module = importlib.import_module(f'dashboard.plugins.{plugin}')
+        app.register_blueprint(module.plugin, url_prefix=module.base_path)
+        plugins[plugin] = {'tab_name': module.tab_name}
 
     app.airflow_data_provider = AirflowDBDataProvider(app.config, app.logger, MySQLClient(app.config, app.logger))
     app.influx_data_provider = InfluxDBData(app.config, app.logger) if app.config.get('INFLUXDB_HOST') else None
     app.prometheus_data_provider = PrometheusData(app.config, app.logger) if app.config.get('PROMETHEUS_HOST') else None
     
-    # Reading all external configs, setting variables to `None` if files are not present
+    # Reading tables configs, setting variable to `None` if file is not present
     tables = get_yaml_file_content(TABLES_PATH)
-    reports = get_yaml_file_content(REPORTS_PATH)
-    extra_etls_file = get_yaml_file_content(EXTRA_ETL_PATH)
-    extra_etls = [ExtraEtl(**etl) for etl in extra_etls_file] if extra_etls_file else None
 
     app.table_data_provider = TableDataProvider(
         app.airflow_data_provider, app.influx_data_provider,
         app.prometheus_data_provider, tables, app.logger, app.config) if tables else None
 
     app.etl_data_provider = EtlDataProvider(
-        app.config, extra_etls, app.airflow_data_provider, app.table_data_provider)
-
-    app.description_data_provider = DescriptionData(
-        app.config, app.logger, tables) if app.config.get('TABLE_DESCRIPTION_ACTIVE') else None
-
-    app.report_data_provider = ReportsDataProvider(
-        app.airflow_data_provider, reports['reports']
-    ) if reports else None
+        app.config, app.airflow_data_provider, app.table_data_provider)
 
     app.async_request_executor = ThreadPoolExecutor(max_workers=3)
+    app.cache = SimpleCache()
 
     if app.debug:
         app.wsgi_app = DebuggedApplication(app.wsgi_app, evalex=True)
+
+    app.context_processor(lambda: {'now': datetime.now(), 'plugins': plugins})
 
     return app
 

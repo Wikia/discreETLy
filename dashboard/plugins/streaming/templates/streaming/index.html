@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %} {% import 'macros/common.html' as common with context %}
+
+{% block title %}{{ config['EXTRA_TAB'] }}{% endblock %}
+
+{% block nav %}
+
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item"><a href="/extra">{{ config['EXTRA_TAB'] }}</a></li>
+
+{% endblock %} 
+
+{% block body %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/etl_dashboard.css') }}">
+
+<div id="list-container" style="width:55%;margin:auto">
+    <div id="table-container">
+        <div class="row mt-2 table-header">
+            <div class="col-4 col-sm-5 col-md-4 col-xl-4">Streaming name</div>
+            <div class="col-4 col-sm-5 col-md-4 col-xl-4">Streaming table</div>
+            <div class="col-3 col-xl-3">Status (&#x2705; or &#x274C;)</div>
+        </div>
+        {% for stream in streams %}
+        <div class="row mt-2 etl-data">
+            <div class="col-4 col-sm-5 col-md-4 col-xl-4"><a href="{{ stream.link }}">{{ stream.name }}</a></div>
+            <div class="col-4 col-sm-4 col-md-2 col-xl-4">
+                {{ stream.table }}
+            </div>
+            <div class="col-3 col-xl-3">
+                {% if stream.active_alerts %}
+                    <p>&#x274C;</p>
+                {% else %}
+                    <p>&#x2705;</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

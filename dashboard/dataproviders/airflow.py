@@ -76,21 +76,6 @@ class AirflowDBDataProvider:
             FROM task_instance WHERE dag_id='{dag_id}' AND execution_date='{execution_date}'""".replace("\n", ""))
         return [TaskInstance(**row) for row in data]
 
-    def get_report_table_state(self, report_tables):
-
-        statuses = '","'.join(
-            reduce(
-                lambda x, y: x + y, 
-                list(report_tables.values())
-                )
-            )
-
-        query = f'SELECT task_id, state from' \
-                f'(SELECT task_id, state, max(execution_date) FROM task_instance ' \
-                f'where task_id in  ("{statuses}") group by task_id, state) a'
-
-        return self.client.query(query)
-
 
     def get_dags_status(self):
         '''

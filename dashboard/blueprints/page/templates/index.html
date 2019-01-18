@@ -56,7 +56,7 @@
                 </div>
                 <div class="card-body">
                     {% if tables_failure %}
-                        <h4>There are tables that failed to load toady, check <a href="{{ url_for('page.tables_dashboard') }}">tables dashboard</a></h4>
+                        <h4>There are tables that failed to load toady, check <a href="{{ url_for('tables.index') }}">tables dashboard</a></h4>
                     {% endif %}
                     {% set today_tables = tables|
                                 selectattr('state', 'eq', 'success')|

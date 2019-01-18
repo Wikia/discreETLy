@@ -1,7 +1,0 @@
-####### ETLs ##########
-# This file only defines ETLs that are not controlled by airflow. Airflow Dags are read directly from mysql db.
-
-- name: my_sample_kinesis_based_etl
-  link_title: Kinesis
-  link_href: "https://console.aws.amazon.com/kinesis/home?region=us-east-1#/streams/details?streamName=some_stream&tab=monitoring"
-  table: sampledb.sampletable

@@ -1,0 +1,16 @@
+- name: raw_table
+  db: dbname
+  dag_id: my_dag
+  task_id: raw_table_insert
+
+- name: fact_table
+  db: dbname
+  dag_id: my_dag
+  task_id: fact_table_insert
+  uses: dbname.raw_table
+
+- name: rollup_table
+  db: dbname
+  dag_id: my_dag
+  task_id: rollup_table_insert
+  uses: dbname.fact_table

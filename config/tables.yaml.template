@@ -1,5 +1,0 @@
-- name: my_table
-  db: my_db
-  uses: statsdb.fact_event_events
-  dag_id: my_dag
-  task_id: my_task

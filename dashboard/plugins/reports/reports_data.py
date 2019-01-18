@@ -6,9 +6,9 @@ from dashboard.utils.vis import tree_diagram
 
 class ReportsDataProvider:
 
-    def __init__(self, airflow, reports):
+    def __init__(self, tables, reports):
 
-        self.__airflow = airflow
+        self.__tables = tables
         self.__reports = reports
         self.COLORS = {
             "success": 1,
@@ -19,7 +19,7 @@ class ReportsDataProvider:
     @property
     def reports(self):
 
-        statuses = self.__fetch_status(self.__reports)
+        statuses = {table['id']: table['state'] for table in self.__tables}
 
         output_reports = []
 
@@ -29,7 +29,6 @@ class ReportsDataProvider:
                         for index, table in enumerate(report['definition']['tables'])}
 
             tables = [{'id': id_mapping[table['id']],
-                    'tid': table['tid'],
                     'name': table['name'],
                     'parent': id_mapping.get(table.get('parent', None)),
                     'success': self.COLORS.get(statuses[table['id']], "black")
@@ -49,12 +48,3 @@ class ReportsDataProvider:
                 })
 
         return output_reports
-
-    def __fetch_status(self, reports):
-        grouped = defaultdict(list)
-
-        for report in reports:
-            for table in report['definition']['tables']:
-                grouped[table['dag']].append(table['id'])
-
-        return {status['task_id']: status['state'] for status in self.__airflow.get_report_table_state(grouped)}

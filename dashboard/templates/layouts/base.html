@@ -42,22 +42,11 @@
         <li class="nav-item px-3">
           <a class="nav-link" href="{{ url_for('page.etl_dashboard') }}">ETLs</a>
         </li>
+        {% for plugin in plugins.items() %}
         <li class="nav-item px-3">
-          <a class="nav-link" href="{{ url_for('page.tables_dashboard') }}">Tables</a>
-        </li>
-        <li class="nav-item px-3">
-          <a class="nav-link" href="/reports">Reports</a>
-        </li>
-        {% if config['EXTRA_ACTIVE'] %}
-        <li class="nav-item px-3">
-          <a class="nav-link" href="/extra">{{ config['EXTRA_TAB'] }}</a>
-        </li>
-        {% endif %}
-        {% if config['TABLE_DESCRIPTION_ACTIVE'] %}
-        <li class="nav-item px-3">
-          <a class="nav-link" href="/descriptions">Table Descriptions</a>
-        </li>
-        {% endif %}
+          <a class="nav-link" href="{{ url_for(plugin[0] + '.index') }}">{{ plugin[1].tab_name }}</a>
+        </li> 
+        {% endfor %}
       </ul>
     </div>
 
@@ -67,6 +56,7 @@
         <small>Page refreshed at: <b>{{ now.strftime('%H:%M:%S') }} UTC</b></small>
       </li>
       <li class="nav-item dropdown">
+        {% if 'user' in session %}
         <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
           <img class="img-avatar" src="{{ session.user.picture }}" alt="{{ session.user.email }}">
         </a>
@@ -77,6 +67,7 @@
           <a class="dropdown-item" href="{{ url_for('page.logout') }}">
             <i class="fa fa-lock"></i> Logout</a>
         </div>
+        {% endif %}
       </li>
     </ul>
   </header>
