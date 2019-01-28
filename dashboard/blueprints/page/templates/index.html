@@ -31,14 +31,10 @@
             {% endif %}
 
             <h5 class="card-title">Succeeded:
-                <button type="button"
-                        class="btn etl-success">{{ etl_summary | selectattr('state', 'eq', 'success') | list | count }}
-                </button>
+                <p class="status-box etl-success">{{ etl_summary | selectattr('state', 'eq', 'success') | list | count }}</p>
             </h5>
             <h5 class="card-title">Running:
-                <button type="button"
-                        class="btn etl-issue">{{ etl_summary | selectattr('state', 'eq', 'running') | list | count }}
-                </button>
+                <p class="status-box etl-issue">{{ etl_summary | selectattr('state', 'eq', 'running') | list | count }}</p>
             </h5>
 
         </div>
@@ -65,10 +61,9 @@
                                 list|
                                 count %}
                     <h5 class="card-title">Daily load progress:
-                        <button type="button"
-                                class="btn etl-{% if today_tables == tables|count %}success{% else %}issue{% endif %}">
+                        <p class="status-box etl-{% if today_tables == tables|count %}success{% else %}issue{% endif %}">
                             <b>{{ (today_tables/tables|count * 100)|int }}%</b>
-                        </button>
+                        </p>
                     </h5>
                     <p>Total tables: {{ tables|count }}</p>
                     <p>Tables updated today: {{ today_tables }}</p>

@@ -62,13 +62,17 @@ img:hover {
     width: 20%;
     height: 100%;
     text-align: center;
-    background-color: aqua;
+    background-color: #5f7a7b;
     border-left: 1px dotted black;
 }
 
 #clear-search-container:hover {
     background-color: black;
     color: white;
+}
+
+#clear-search {
+    cursor: default;
 }
 
 #list-container {
@@ -198,6 +202,7 @@ row {
 }
 
 .app-help {
+    cursor: default;
     position: absolute;
     right: 1.5rem;
     margin-top: .3rem;
@@ -226,6 +231,12 @@ row {
     border: 1px solid black;
     border-radius: 1rem;
     background-color: white;
+}
+
+.status-box {
+    display: inline-block;
+    padding: .8rem;
+    border-radius: 10%
 }
 
 @media (max-width:768px) {
