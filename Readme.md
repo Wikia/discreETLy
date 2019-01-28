@@ -48,6 +48,8 @@ in the following docs:
   streaming applications
 * [Table Descritpions](dashboard/plugins/table_descriptions/README.md) - table and
   columns description
+* [S3 Usage](dashboard/plugins/s3_usage/README.md) - browser of the aggregated metadata
+  of files stored inside mutliple S3 buckets
 * [Hello World](dashboard/plugins/hello_world/README.md) - DiscreETLy Developers Docs
 
 

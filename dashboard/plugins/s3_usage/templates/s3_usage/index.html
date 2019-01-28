@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %} {% import 'macros/common.html' as common with context %}
+
+{% block autorefresh %}-1{% endblock %}
+
+{% block title %}Hello World{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+{% endblock %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script>
+$('#s3').jstree({
+    'core' : {
+      'data' : {
+        'url' : function (node) {
+          return node.id === '#' ?
+            '/s3_usage/api/buckets' :
+            '/s3_usage/api/directories';
+        },
+        'data' : function (node) {
+          return { 'id' : node.id };
+        }
+      }
+    }});
+    </script>
+{% endblock %}
+
+{% block nav %}
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item"><a href="/s3_usage">S3 Usage</a></li>
+{% endblock %}
+
+{% block body %}
+<h1>S3 usage</h1>
+<div id="s3">
+</div>
+{% endblock %}
+
+
