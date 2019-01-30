@@ -67,3 +67,6 @@ ENABLED_PLUGINS= ['tables', 'hello_world']
 #    'aws_secret_access_key': '<aws_secret_access_key>'
 #}
 #TABLE_DESCRIPTIONS_TTL = 300 # 5 minutes is the default
+
+# Refresh rate - time in seconds when a page gets refreshed and pulls new data
+REFRESH_RATE=300
