@@ -11,8 +11,7 @@ following parameters:
  * `buckets_regexp` - regular expression to match the buckets
  * `aws_access_key_id` and `aws_secret_access_key` - credentials to be used to communicate
    with AWS API
- * `ttl` (optional) - time to live of cached sizes (default: 24 hours)
- * `check_every` (optional) - how often to check for stale data
+ * `ttl` (optional) - time to live of cached sizes in seconds (default: 24 hours)
 
 From the technical perspective: after the application starts, plugin starts `S3StatsRefreshTask`
 that checks for buckets matching the provided regular expression. For each bucket all keys
