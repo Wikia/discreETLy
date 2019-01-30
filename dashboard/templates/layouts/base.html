@@ -7,7 +7,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <meta http-equiv="refresh" content="{% block autorefresh %}120{% endblock %}">
+
+  <meta http-equiv="refresh" content="{% block autorefresh %}{{ config['REFRESH_RATE'] }}{% endblock %}">
+
   <title>{% block title %}{% endblock %}</title>
   <!-- Icons-->
   <link href="https://unpkg.com/@coreui/icons/css/coreui-icons.min.css" rel="stylesheet">
@@ -96,8 +98,8 @@
       <p><b>ETLs</b> - information about the status of all ETL processes (DAGs) available in airflow database. If tables are defined this view shows number of processed tables. If tables information
       is missing, it shows number of tasks completed.</p>
       <p><b>Tables</b> - information available only it tables mapping is defined in a yaml file. It shows current status of processing related to a particular table.</p>
-      <p><b>Reports</b> - information available only if reports mapping is defined in a yaml file. It shows current status of processing related to a set of tables that constitute to a particular report.</p>
-      <p>For more information contact the team responsible for maintaining the dashboard or search the <a href="https://github.com/Wikia/discrETLy">documentation</a>.</p>
+      <p><b>Plugins</b> - any information provided through plugins system available in discreETLy with appropriate tab name.</p>
+      <p>For more information contact the team responsible for maintaining the dashboard or search the <a href="https://github.com/Wikia/discreETLy">documentation</a>.</p>
     </div>
   </div>
   <footer class="app-footer" style="display: none">
@@ -131,8 +133,9 @@
     var helpButton = document.querySelector(".app-help");
     var helpInfo = document.querySelector(".help-modal");
 
-    helpButton.addEventListener("mouseover", (_) => helpInfo.style.visibility = "visible");
-    helpButton.addEventListener("mouseout", (_) => helpInfo.style.visibility = "hidden");
+    helpButton.addEventListener("click", (_) => {
+      helpInfo.style.visibility === "visible" ? helpInfo.style.visibility = "hidden" : helpInfo.style.visibility = "visible"
+    });
   </script>
   {% block js %}{% endblock %}
 </body>

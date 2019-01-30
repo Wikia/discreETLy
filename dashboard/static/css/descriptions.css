@@ -29,10 +29,11 @@
 
 .column-header-section {
     background-color: #c7cfce;
+    padding: 1rem;
 }
 
 .column-data-section {
-	display: block;
+	display: none;
     padding-left: 3rem;
     padding-right: 3rem;
     padding-top: 1.5rem;
