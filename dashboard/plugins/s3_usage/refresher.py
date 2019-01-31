@@ -41,12 +41,11 @@ class S3StatsRefreshTask:
     INSERT_STMT = 'INSERT INTO stats VALUES (?, ?, ?, ?, ?, ?, ?)'
 
     def __init__(self, logger, buckets_regexp, aws_access_key_id, aws_secret_access_key, ttl):
-        s3 = boto3.client('s3', 
+        self.s3 = boto3.client('s3', 
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key)
-        self.s3_aggregator = S3Aggregator(s3)
-        self.buckets = [bucket['Name'] for bucket in s3.list_buckets()['Buckets'] 
-                                            if re.match(buckets_regexp, bucket['Name'])]
+        self.s3_aggregator = S3Aggregator(self.s3)
+        self.buckets_regexp = buckets_regexp
         self.logger = logger
         self.ttl = ttl
 
@@ -55,6 +54,10 @@ class S3StatsRefreshTask:
             return time.time() - os.stat(STATS_DB_PATH).st_mtime > self.ttl
         except FileNotFoundError:
             return True
+
+    def list_buckets(self):
+        return [bucket['Name'] for bucket in self.s3.list_buckets()['Buckets'] 
+                                            if re.match(self.buckets_regexp, bucket['Name'])]
 
     def run(self):
         with open(LOCK_PATH, 'w') as lock:
@@ -70,11 +73,11 @@ class S3StatsRefreshTask:
             self.sqlite = sqlite3.connect(STATS_DB_TMP_PATH)
             self.sqlite.execute(self.CREATE_STMT)
             self.sqlite.commit()
-            self.logger.info(f"Downloading stats for buckets {self.buckets}")
 
-            #self.sqlite.execute("BEGIN")
+            buckets = self.list_buckets()
+            self.logger.info(f"Downloading stats for buckets {buckets}")
             global_stats = KeyPrefix()
-            for bucket in self.buckets:
+            for bucket in buckets:
                 data = self.load_s3_bucket(bucket)
                 bucket_stats = self.dump_s3_bucket(data, bucket)
                 global_stats += bucket_stats
