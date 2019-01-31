@@ -1,25 +1,8 @@
 from influxdb import InfluxDBClient
-from timeit import default_timer as timer
-import inspect
+from dashboard.utils import Timer
 from influxdb.exceptions import InfluxDBClientError, InfluxDBServerError
+import inspect
 import backoff
-
-class InfluxTimer:
-
-    def __init__(self, logger):
-        self.logger = logger
-        self.query = next(call.function for call in inspect.stack()[2:] if call.function != 'retry') # first call that is not retry
-
-    def __enter__(self):
-        self.start = timer()
-        self.logger.debug(f"Influx query {self.query} started")
-        return self
-
-    def __exit__(self, *args):
-        self.end = timer()
-        self.interval = self.end - self.start
-        self.logger.info(f"Influx query for {self.query} took {self.interval:.2f} sec")
-
 
 class InfluxDbService:
 
@@ -37,5 +20,5 @@ class InfluxDbService:
 
     @backoff.on_exception(backoff.expo, (InfluxDBServerError, InfluxDBClientError), max_tries=4)
     def query(self, query):
-        with InfluxTimer(self.logger):
+        with Timer(self.logger, f"Influx query {query}"):
             return self.cnx.query(query)

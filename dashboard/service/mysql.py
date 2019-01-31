@@ -1,28 +1,10 @@
 import MySQLdb
 import MySQLdb.cursors
 import _mysql_exceptions
-from timeit import default_timer as timer
 import inspect
 import queue
 import backoff
-
-
-class MySQLClientTimer:
-
-    def __init__(self, logger):
-        self.logger = logger
-        self.query = next(call.function for call in inspect.stack()[2:] if call.function != 'retry') # first call that is not retry
-
-    def __enter__(self):
-        self.start = timer()
-        self.logger.debug(f"MySQL query {self.query} started")
-        return self
-
-    def __exit__(self, *args):
-        self.end = timer()
-        self.interval = self.end - self.start
-        self.logger.info(f"MySQL query for {self.query} took {self.interval:.2f} sec")
-
+from dashboard.utils import Timer
 
 class MySQLClient:
 
@@ -50,7 +32,7 @@ class MySQLClient:
         cursor = None
         conn = self.pool.get(True)
         try:
-            with MySQLClientTimer(self.logger):
+            with Timer(self.logger, f"MySQL query {query}"):
                 cursor = conn.cursor()
                 cursor.execute(query)
                 return cursor.fetchall()

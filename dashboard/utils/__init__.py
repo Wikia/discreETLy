@@ -1,6 +1,7 @@
 import re
 import os
 import yaml
+import time
 
 def clean_dag_id(dag_id):
     return re.sub('_v?[0-9]+.[0-9]+$', '', dag_id)
@@ -44,3 +45,19 @@ def sizeof_fmt(num, suffix='B'):
             return "%3.1f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.1f%s%s" % (num, 'Yi', suffix)
+
+
+class Timer:
+
+    def __init__(self, logger, description):
+        self.logger = logger
+        self.description = description
+
+    def __enter__(self):
+        self.start = time.time()
+        self.logger.debug(f"{self.description} started")
+        return self
+
+    def __exit__(self, *args):
+        self.interval = time.time() - self.start
+        self.logger.info(f"{self.description} took {self.interval:.2f} sec")
