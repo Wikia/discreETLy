@@ -19,3 +19,5 @@ are listed and the metadata are stored in aggregated context (in "directory" con
 SQLite database inside Docker container. Tab view uses REST API to retrieve the requested 
 data from SQLite database and presend them in form of the directory tree and subburst
 diagram.
+
+![s3 usage](screenshot.png)
