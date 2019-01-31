@@ -92,7 +92,6 @@ class S3StatsDB:
     def query(self, base, depth=None, order="size_desc", children_only=False):
         sqlite = sqlite3.connect(STATS_DB_PATH)
         sqlite.row_factory = sqlite3.Row
-        cursor = sqlite.cursor()
         order = self.ORDER_DEFINITION.get(order, self.ORDER_DEFINITION['size_desc'])
         query = f"SELECT *, (size_standard + size_ia + size_glacier) as size " \
                 f"FROM stats " \
@@ -100,8 +99,10 @@ class S3StatsDB:
                 f"AND {self.format_depth_condition(base, depth)} " \
                 f"order by {order}"
         with Timer(self.logger, f"S3 stats query {query}"):
-            cursor.execute(query)
-            result = cursor.fetchall() 
-            cursor.close()
-            sqlite.close()
-            return result
+            try:
+                cursor = sqlite.cursor()
+                cursor.execute(query)
+                return cursor.fetchall() 
+            finally:
+                cursor.close()
+                sqlite.close()

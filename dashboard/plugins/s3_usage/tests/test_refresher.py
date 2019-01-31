@@ -1,6 +1,6 @@
 import logging
-from .refresher import S3StatsRefreshTask, STATS_DB_PATH
-from .statsdb import S3StatsDB
+from dashboard.plugins.s3_usage.refresher import S3StatsRefreshTask, STATS_DB_PATH
+from dashboard.plugins.s3_usage.statsdb import S3StatsDB
 from moto import mock_s3
 import os
 import boto3

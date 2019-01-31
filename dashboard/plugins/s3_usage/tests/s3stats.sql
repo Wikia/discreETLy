@@ -1,0 +1,14 @@
+BEGIN TRANSACTION;
+CREATE TABLE stats (path VARCHAR, files INTEGER, size_standard INTEGER, size_ia INTEGER, size_glacier INTEGER, depth INTEGER, is_leaf INTEGER);
+INSERT INTO stats VALUES('/discreetly-bucket1',3,3145728,0,0,1,1);
+INSERT INTO stats VALUES('/discreetly-bucket1/table',3,3145728,0,0,2,0);
+INSERT INTO stats VALUES('/discreetly-bucket1/table/year=2019',3,3145728,0,0,3,0);
+INSERT INTO stats VALUES('/discreetly-bucket1/table/year=2019/month=01',3,3145728,0,0,4,0);
+INSERT INTO stats VALUES('/discreetly-bucket1/table/year=2019/month=01/day=01',1,1048576,0,0,5,1);
+INSERT INTO stats VALUES('/discreetly-bucket1/table/year=2019/month=01/day=02',1,1048576,0,0,5,1);
+INSERT INTO stats VALUES('/discreetly-bucket1/table/year=2019/month=01/day=03',1,1048576,0,0,5,1);
+INSERT INTO stats VALUES('/discreetly-bucket2',2,2097152,0,0,1,1);
+INSERT INTO stats VALUES('/discreetly-bucket2/dir1',1,1048576,0,0,2,1);
+INSERT INTO stats VALUES('/discreetly-bucket2/dir2',1,1048576,0,0,2,1);
+INSERT INTO stats VALUES('',5,5242880,0,0,0,0);
+COMMIT;
