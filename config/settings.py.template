@@ -57,6 +57,9 @@ COMPANY_NAME = 'ACME'
 # documentation.
 ENABLED_PLUGINS= ['tables', 'hello_world']
 
+# Refresh rate - time in seconds when a page gets refreshed and pulls new data
+REFRESH_RATE=300
+
 # Plugin-specific configuration: table_descriptions
 # The following lines enable AWS Glue Data catalogue as a source of the table descritpions. This dataprovider
 # requires AWS region, access key and secret key to be provided.
@@ -68,5 +71,11 @@ ENABLED_PLUGINS= ['tables', 'hello_world']
 #}
 #TABLE_DESCRIPTIONS_TTL = 300 # 5 minutes is the default
 
-# Refresh rate - time in seconds when a page gets refreshed and pulls new data
-REFRESH_RATE=300
+# The following lines configure s3_usage plugin. See plugin documentation for more information.
+#S3_USAGE_PARAMS = {
+#    'buckets_regexp': '^data-.*$',
+#    'aws_access_key_id': '......'
+#    'aws_secret_access_key': '....'
+#}
+
+
