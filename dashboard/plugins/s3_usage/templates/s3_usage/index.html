@@ -1,0 +1,165 @@
+{% extends 'layouts/base.html' %} {% import 'macros/common.html' as common with context %}
+
+{% block autorefresh %}-1{% endblock %}
+
+{% block title %}Hello World{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+{% endblock %}
+
+
+
+{% block nav %}
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item"><a href="/s3_usage">S3 Usage</a></li>
+{% endblock %}
+
+{% block body %}
+<h1>S3 usage</h1>
+<div class="row">
+  <div class="form-check form-check-inline">
+    Sort tree by:
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="inlineRadioOptions" name="treeOrder" value="size_desc" checked>
+    <label class="form-check-label" for="inlineRadio1">data size <span class="cui-sort-descending" aria-hidden="true"></span></label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="inlineRadioOptions" name="treeOrder" value="files_desc">
+    <label class="form-check-label" for="inlineRadio2">number of files <span class="cui-sort-descending" aria-hidden="true"></span></label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="inlineRadioOptions" name="treeOrder" value="avg_file_size_desc">
+    <label class="form-check-label" for="inlineRadio3">average file size <span class="cui-sort-ascending" aria-hidden="true"></span></label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="inlineRadioOptions" name="treeOrder" value="alphabetically">
+    <label class="form-check-label" for="inlineRadio3">alphabetically <span class="cui-sort-ascending" aria-hidden="true"></span></label>
+  </div>
+</div>
+<div class="row">
+    <div class="col" id="s3"></div>
+    <div class="col">
+      Selected path: <b id="selected_path">all buckets</b>, storage classes distribution:
+      <div id="storage_clases" class="progress" style="width: 600px">
+          {% include 's3_usage/partial_storage_classes.html' with context %}
+      </div>
+      <div id="sunburst"></div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script>
+var treeOrder = "size_desc";
+$('#s3').on('select_node.jstree', function (e, data) {
+    normalized_path = data.node.id == "root" ? "" : data.node.id
+    $('#s3').jstree("toggle_node", data.node);
+    vegaView.signal('base', normalized_path).run()
+    document.getElementById("selected_path").textContent=data.node.id == "root" ? "all buckets" : data.node.id
+    $("#storage_clases").load("ajax/storage_classes?path=" + normalized_path);
+  }).jstree({
+    'core' : {
+      'data' : {
+        'url' : function (node) {
+          return node.id === '#' ?
+            '/s3_usage/api/buckets' :
+            '/s3_usage/api/directories';
+        },
+        'data' : function (node) {
+          return { 'id' : node.id, 'order': treeOrder };
+        }
+      }
+    }});
+
+$('input[type="radio"]').on('click', function(e) {
+    treeOrder = e.target.value;
+    $('#s3').jstree("refresh");
+});
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/vega-tooltip@0.9"></script>
+<script type="text/javascript">
+
+ vegaSpec = {
+    "$schema": "https://vega.github.io/schema/vega/v4.json",
+    "width": 600,
+    "height": 600,
+    "padding": 5,
+    "autosize": "none",
+
+    "signals": [
+      {
+        "name": "base", "value": "",
+      }
+    ],
+  
+    "data": [
+      {
+        "name": "tree",
+        "url": {"signal": "'api/sunburst?base=' + base"},
+        "transform": [
+          {
+            "type": "stratify",
+            "key": "id",
+            "parentKey": "parent"
+          },
+          {
+            "type": "partition",
+            "field": "size",
+            "sort": {"field": "value"},
+            "size": [{"signal": "2 * PI"}, {"signal": "width / 2"}],
+            "as": ["a0", "r0", "a1", "r1", "depth", "children"]
+          }
+        ]
+      }
+    ],
+  
+    "scales": [
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": {"data": "tree", "field": "depth"},
+        "range": {"scheme": "tableau20"}
+      }
+    ],
+  
+    "marks": [
+      {
+        "type": "arc",
+        "from": {"data": "tree"},
+        "encode": {
+          "enter": {
+            "x": {"signal": "width / 2"},
+            "y": {"signal": "height / 2"},
+            "fill": {"scale": "color", "field": "depth"},
+            "tooltip": {"signal": "datum.name + (datum.size_fmt ? ', ' + datum.size_fmt : '')"}
+          },
+          "update": {
+            "startAngle": {"field": "a0"},
+            "endAngle": {"field": "a1"},
+            "innerRadius": {"field": "r0"},
+            "outerRadius": {"field": "r1"},
+            "stroke": {"value": "white"},
+            "strokeWidth": {"value": 0.5},
+            "zindex": {"value": 0}
+          },
+          "hover": {
+            "stroke": {"value": "red"},
+            "strokeWidth": {"value": 2},
+            "zindex": {"value": 1}
+          }
+        }
+      }
+    ]
+  };
+
+  vegaView = new vega.View(vega.parse(vegaSpec))
+        .renderer('svg') // set renderer (canvas or svg)
+        .initialize('#sunburst') // initialize view within parent DOM container
+        .hover().run();
+  </script>
+{% endblock %}

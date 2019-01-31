@@ -1,0 +1,9 @@
+{% if storage_classes.size_standard.percent > 0 %}
+<div class="progress-bar bg-success" role="progressbar" style="width: {{ storage_classes.size_standard.percent * 100 }}%">STANDARD: {{ storage_classes.size_standard.size}}</div>
+{% endif %}
+{% if storage_classes.size_ia.percent > 0 %}
+<div class="progress-bar bg-info" role="progressbar" style="width: {{ storage_classes.size_ia.percent * 100 }}%">INFREQUENT ACCES: {{ storage_classes.size_ia.size}}</div>
+{% endif %}
+{% if storage_classes.size_glacier.percent > 0 %}
+<div class="progress-bar bg-warning" role="progressbar" style="width: {{ storage_classes.size_glacier.percent * 100 }}%">GLACIER: {{ storage_classes.size_glacier.size}}</div>
+{% endif %}

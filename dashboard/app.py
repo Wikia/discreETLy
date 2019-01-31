@@ -74,6 +74,8 @@ def create_app(settings_override=None):
     for plugin in app.config['ENABLED_PLUGINS']:
         module = importlib.import_module(f'dashboard.plugins.{plugin}')
         app.register_blueprint(module.plugin, url_prefix=module.base_path)
+        if hasattr(module, 'init'):
+            module.init(app)
         plugins[plugin] = {'tab_name': module.tab_name}
 
     app.airflow_data_provider = AirflowDBDataProvider(app.config, app.logger, MySQLClient(app.config, app.logger))

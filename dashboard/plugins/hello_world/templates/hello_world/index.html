@@ -41,6 +41,10 @@ Each plugin must provide 3 variables in the main scope as the manifest:
     <li><code>plugin</code> - implementation of <code>flask.Blueprint</code> to be created</li>
 </ul>
 
+Also, if the plugin needs to perform some work after start of the application (and not after
+first user's reques), define a function <code>init</code> inside that gets application object
+(with generic modules like <code>app.config</code> and <code>app.logger</code>)
+
 <h3>Core data providers and helpers</h3>
 
 In your plugin you can use a number of services/helpers provided by the core.

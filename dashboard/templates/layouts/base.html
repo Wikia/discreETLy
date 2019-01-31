@@ -7,7 +7,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <meta http-equiv="refresh" content="{{ config['REFRESH_RATE'] }}">
+
+  <meta http-equiv="refresh" content="{% block autorefresh %}{{ config['REFRESH_RATE'] }}{% endblock %}">
+
   <title>{% block title %}{% endblock %}</title>
   <!-- Icons-->
   <link href="https://unpkg.com/@coreui/icons/css/coreui-icons.min.css" rel="stylesheet">
@@ -25,6 +27,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@2.6.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.18.1"></script>
 
+  {% block css %}{% endblock %}
 </head>
 
 <body class="app header-fixed sidebar-hidden aside-menu-fixed">
@@ -134,6 +137,7 @@
       helpInfo.style.visibility === "visible" ? helpInfo.style.visibility = "hidden" : helpInfo.style.visibility = "visible"
     });
   </script>
+  {% block js %}{% endblock %}
 </body>
 
 </html>

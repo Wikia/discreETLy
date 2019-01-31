@@ -13,7 +13,7 @@ config = {
 client = SqliteService()
 SqliteService.migrate(
     client.conn, 
-    'airflow.sql'
+    'dashboard/tests/mocks/airflow.sql'
     )
 
 airflow = AirflowDBDataProvider(config, logger, client)

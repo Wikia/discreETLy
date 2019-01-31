@@ -1,4 +1,21 @@
-# VERSION 0.2.3
+# VERSION 0.2.5
+
+## Base
+
+### Changes
+
+* Plugin manifest is changed to include the `init` fnction
+* New utils: `Timer` for external system call measurment and `sizeof_fmt` for formatting human readable object sizes [(source)](https://stackoverflow.com/a/1094933/7098262)
+
+## Plugins
+
+### Changes
+* New plugin added: S3 Usage [(documentation)](dashboard/plugins/s3_usage/README.md)
+
+### Fixes
+* Auto-refresh disabled on Table descriptions tab
+
+# VERSION 0.2.4
 
 This is a version with tiny changes to layout and functionality as some bugfixes. It does not introduce new features.
 
