@@ -67,7 +67,6 @@ class TableDataProvider:
         self.prometheus = prometheus
         self.tables = TableDataProvider._process_input_tables(tables)
         self.logger = logger
-        self.influx_client_executor = ThreadPoolExecutor(max_workers=4) if self.influx else None
         self.config = config
 
     def get_tables(self):
