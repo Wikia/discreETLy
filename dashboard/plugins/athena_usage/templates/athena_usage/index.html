@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %} {% import 'macros/common.html' as common with context %}
 
-{% block title %}Hello World{% endblock %}
+{% block title %}Athena Usage Dashboard{% endblock %}
 
 {% block nav %}
 
@@ -10,57 +10,17 @@
 {% endblock %}
 {% block body %}
 
-<h1>Hello World! DiscreETLy Developers Documentation</h1>
+<h1>Athena Usage Dashboard</h1>
 
-Contribute to DiscreETLy and adjust the views and data providers to your needs using
-plugins system! All plugins reside in <code>dashboard/plugins</code> and creating 
-a new one is very easy:
-
-    {{ query_result }}
-
-<pre><code>
-# 1. Copy hello_world plugin contents
-cp -r dashboard/plugins/hello_world dashboard/plugins/$PLUGIN_NAME
-
-# 2. Fix the templates namespace
-mv  dashboard/plugins/$PLUGIN_NAME/templates/hello_world dashboard/plugins/$PLUGIN_NAME/templates/$PLUGIN_NAME 
-
-# 3. Adjust the code and template
-vi dashboard/plugins/$PLUGIN_NAME/__init__.py
-vi dashboard/plugins/$PLUGIN_NAME/templates/$PLUGIN_NAME/index.html
-
-# 4. Enable the plugin in settings.py
-vi config/settings.py
-</code></pre>
-
-<h3>Plugin Manifest</h3>
-
-Each plugin must provide 3 variables in the main scope as the manifest:
-
-<ul>
-    <li><code>base_path</code> - the URL part that all plugin routes are relative to</li>
-    <li><code>tab_name</code> - user-friendly name of the plugin to put on navigation bar</li>
-    <li><code>plugin</code> - implementation of <code>flask.Blueprint</code> to be created</li>
-</ul>
-
-Also, if the plugin needs to perform some work after start of the application (and not after
-first user's reques), define a function <code>init</code> inside that gets application object
-(with generic modules like <code>app.config</code> and <code>app.logger</code>)
-
-<h3>Core data providers and helpers</h3>
-
-In your plugin you can use a number of services/helpers provided by the core.
-All these objects are members of the `app` object, so import the current application
-first: <code>from flask import current_app as app</code> and then you can use:
-
-<ul>
-    <li><code>app.airflow_data_provider</code> - provides Airflow DAGs list, task statuses, ... (retrieved from the DB)</li>
-    <li><code>app.influx_data_provider</code> - queries InfluxDB for the records count for the tables</li>
-    <li><code>app.prometheus_data_provider</code> - lists currently fired alerts on Prometheus</li>
-    <li><code>app.airflow_data_provider</code> - provides tables list with status, alerts, records counts, ...</li>
-    <li><code>app.etl_data_provider</code> - formats <code>app.airflow_data_provider</code> with custom logic (like calculating DAG duration)</li>
-    <li><code>app.async_request_executor</code> - <code>ThreadPoolExecutor</code> to query data providers in parallel</li>
-    <li><code>app.cache</code> - simple in-memory cache</li>
-</ul>
+<table>
+    {% for username, usages_timespan_dict in summary_user_timespan_size.items() %}
+        <TR>
+        <TD class="Username">{{ username }}</TD>
+        <TD class="Last month">{{usages_timespan_dict['month']}} B</TD>
+        <TD class="Last week">{{usages_timespan_dict['week']}} B</TD>
+        <TD class="Last day">{{usages_timespan_dict['day']}} B</TD>
+        </TR>
+        {% endfor %}
+</table>
 
 {% endblock %}

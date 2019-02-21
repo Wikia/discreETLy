@@ -9,7 +9,7 @@ from .query_dao import QueryDao
 from .athena_summary_provider import AthenaSummaryProvider
 
 base_path = '/athena_usage'
-tab_name = 'Athena Usage Dashboard!'
+tab_name = 'Athena Usage'
 plugin = Blueprint('athena_usage', __name__, template_folder='templates')
 
 
@@ -25,6 +25,6 @@ def init(app):
 @plugin.route('/')
 def index():
     return render_template('athena_usage/index.html',
-                           query_result = str(app.athena_summary_provider.summary_user_timespan_size))
+                           summary_user_timespan_size = app.athena_summary_provider.summary_user_timespan_size)
 
 

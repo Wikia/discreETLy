@@ -40,6 +40,6 @@ class AthenaSummaryProvider:
                     summary_dict[query.executing_user]['day'] += query.data_scanned
 
         return summary_dict
-    
+
             
             
