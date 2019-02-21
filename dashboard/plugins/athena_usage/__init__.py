@@ -20,7 +20,7 @@ def init(app):
                  region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
     dynamodb = boto3.resource('dynamodb', region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
 
-    app.athena_summary_provider = AthenaSummaryProvider(app.config['ATHENA_USAGE_PARAMS'], dynamodb)
+    app.athena_summary_provider = AthenaSummaryProvider(app.config['ATHENA_USAGE_PARAMS'], dynamodb, app.logger)
 
 @plugin.route('/')
 def index():

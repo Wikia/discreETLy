@@ -9,8 +9,9 @@ class AthenaSummaryProvider:
     This class communicates with QueryDao in order to prepare summaries of athena usage
     """
 
-    def __init__(self, config: dict, dynamodb):
-        self.__query_dao = QueryDao(config, dynamodb)
+    def __init__(self, config: dict, dynamodb, logger):
+        self.logger = logger
+        self.__query_dao = QueryDao(config, dynamodb, self.logger)
 
     @property
     def summary_user_timespan_size(self) -> DefaultDict[str, DefaultDict[str, int]]:
