@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import List
+import functools
 
 from boto3.dynamodb.conditions import Attr
 
@@ -22,8 +23,16 @@ class QueryDao:
         _timestamp_30_days_back_py = datetime.now() - timedelta(days=days)
         timestamp_30_days_back_str = datetime.strftime(_timestamp_30_days_back_py, TIMESTAMP_FORMAT)
 
-        response = self.dynamodb.Table(self.config['QUERIES_TABLE']).scan(
-            FilterExpression=Attr('query_state').eq('SUCCEEDED') &
-                             Attr('start_timestamp').gte(timestamp_30_days_back_str))
+        scan_finished_queries_for_days_function_call = functools.partial(self.queries_table.scan,
+                                                                         Attr('query_state').eq('SUCCEEDED') &
+                                                                         Attr('start_timestamp').gte(timestamp_30_days_back_str))
+        response = scan_finished_queries_for_days_function_call()
+        data = response['Items']
 
-        return [AthenaQuery(**item) for item in response.get('Items', [])]
+        # check for paginated results
+        while response.get('LastEvaluatedKey'):
+            response = scan_finished_queries_for_days_function_call(
+                ExclusiveStartKey=response['LastEvaluatedKey'])
+            data.extend(response['Items'])
+
+        return [AthenaQuery(**item) for item in data]
