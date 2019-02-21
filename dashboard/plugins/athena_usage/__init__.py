@@ -24,6 +24,7 @@ def init(app):
 
 @plugin.route('/')
 def index():
-    return render_template('athena_usage/index.html', query_result = str(app.athena_summary_provider.get_summaries()))
+    return render_template('athena_usage/index.html',
+                           query_result = str(app.athena_summary_provider.summary_user_timespan_size))
 
 

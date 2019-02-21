@@ -8,6 +8,7 @@ from .athena_query_model import AthenaQuery, TIMESTAMP_FORMAT
 
 
 class QueryDao:
+    """ This class is responsible for querying dynamoDB """
 
     def __init__(self, config, dynamodb):
         self.config = config
