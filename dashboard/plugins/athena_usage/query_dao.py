@@ -24,15 +24,8 @@ class QueryDao:
         :return: list of AthenaQueries containing the request made in that timespan
         """
         # prepare a list of str dates of days going from now to number timespan_days: int back
-        # this needs to be done in two formats for a batch requests
-        DateTimestampPair = namedtuple('DateTimestampPair', ['date', 'db_timestamp'])
 
-        dates_timestamps_pairs_for_days_back: List[DateTimestampPair] = []
-        for days_back in range(0, timespan_days + 1):
-            _timestamp_posix = datetime.now() - timedelta(days=days_back)
-            dates_timestamps_pairs_for_days_back.append(
-                DateTimestampPair(datetime.strftime(_timestamp_posix, DATE_FORMAT), datetime.strftime(_timestamp_posix, TIMESTAMP_FORMAT)))
-
+        days_back_dates_str = [datetime.strftime(datetime.now() - timedelta(days=days_back), DATE_FORMAT) for days_back in range(0, timespan_days + 1)]
         # prepare a batch request body
         prepared_days_request_items = {
                            f"{self.config['QUERIES_TABLE']}": {
