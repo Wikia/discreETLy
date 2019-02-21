@@ -1,9 +1,9 @@
+import operator
 from datetime import datetime, timedelta
 from typing import List
 import functools
-from collections import namedtuple
 
-from boto3.dynamodb.conditions import Attr
+from boto3.dynamodb.conditions import Attr, Key
 
 from .athena_query_model import AthenaQuery, DATE_FORMAT, TIMESTAMP_FORMAT
 
@@ -27,23 +27,50 @@ class QueryDao:
 
         days_back_dates_str = [datetime.strftime(datetime.now() - timedelta(days=days_back), DATE_FORMAT) for days_back in range(0, timespan_days + 1)]
         # prepare a batch request body
-        prepared_days_request_items = {
-                           f"{self.config['QUERIES_TABLE']}": {
-                               'Keys': [{'start_date': date_timestamp_pair.date, 'start_timestamp': date_timestamp_pair.db_timestamp} for date_timestamp_pair in dates_timestamps_pairs_for_days_back]}
-                       }
+        # prepared_days_request_items = {
+        #                    f"{self.config['QUERIES_TABLE']}": {
+        #                        'Keys': [{'start_date': date_timestamp_pair.date, 'start_timestamp': date_timestamp_pair.db_timestamp} for date_timestamp_pair in dates_timestamps_pairs_for_days_back]}
+        #                }
 
-        # Attr('query_state').eq('SUCCEEDED')
-        batch_get_finished_queries_for_days_function_call = functools.partial(self.dynamodb.batch_get_item,
-                                                                              RequestItems=prepared_days_request_items)
+        # # Attr('query_state').eq('SUCCEEDED')
+        # batch_get_finished_queries_for_days_function_call = functools.partial(self.dynamodb.batch_get_item,
+        #                                                                       RequestItems=prepared_days_request_items)
+        #
+        # response = batch_get_finished_queries_for_days_function_call()
+        # data = response['Responses']
+        # self.logger.debug(response['Responses'])
+        #
+        # # check for paginated results
+        # while response.get('UnprocessedKeys'):
+        #     response = batch_get_finished_queries_for_days_function_call(
+        #         ExclusiveStartKey=response['UnprocessedKeys'])
+        #     data.extend(response['Responses'])
 
-        response = batch_get_finished_queries_for_days_function_call()
-        data = response['Responses']
-        self.logger.debug(response['Responses'])
+        results: List[AthenaQuery] = functools.reduce(operator.concat,
+                                                      map(self.__query_specific_date, days_back_dates_str))
+        return results
+
+    def __query_specific_date(self, date) -> List[AthenaQuery]:
+        """
+        Private method to query for all queries with status SUCCEEDED
+        made on a particular date
+        :param date: str date of DATE_FORMAT
+        :return: List of AthenaQuery, results of this operation
+        """
+
+        query_finished_queries_for_days_function_call = functools.partial(
+            self.queries_table.query,
+            KeyConditionExpression=Key('start_date').eq(date),
+            FilterExpression = Attr('query_state').eq('SUCCEEDED'))
+
+        response = query_finished_queries_for_days_function_call()
+        data = response['Items']
 
         # check for paginated results
-        while response.get('UnprocessedKeys'):
-            response = batch_get_finished_queries_for_days_function_call(
-                ExclusiveStartKey=response['UnprocessedKeys'])
-            data.extend(response['Responses'])
+        while response.get('LastEvaluatedKey'):
+            response = query_finished_queries_for_days_function_call(
+                ExclusiveStartKey=response['LastEvaluatedKey'])
+            data.extend(response['Items'])
 
         return [AthenaQuery(**item) for item in data]
+    
