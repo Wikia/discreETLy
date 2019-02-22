@@ -5,22 +5,39 @@
 {% block nav %}
 
 <li class="breadcrumb-item"><a href="/">Home</a></li>
-<li class="breadcrumb-item"><a href="/hello_world">Hello world!</a></li>
+<li class="breadcrumb-item"><a href="/athena_usage">Athena Usage</a></li>
 
 {% endblock %}
+
+
 {% block body %}
 
+<link href="{{ url_for('static', filename='css/table_dashboard.css')}}" rel="stylesheet">
 <h1>Athena Usage Dashboard</h1>
 
-<table>
+<div id="table-container">
+    <div class="row mt-3 table-header">
+        <div class="col-9 col-sm-6 col-md-4">Username</div>
+        <div class="col col-sm-3 col-md-3 d-none d-sm-block">day</div>
+        <div class="col-3 col-sm-3 col-md-2">week</div>
+        <div class="col-md-3 d-none d-md-block">month</div>
+    </div>
     {% for username, usages_timespan_dict in summary_user_timespan_size.items() %}
-        <TR>
-        <TD class="Username">{{ username }}</TD>
-        <TD class="Last month">{{usages_timespan_dict['month']}} B</TD>
-        <TD class="Last week">{{usages_timespan_dict['week']}} B</TD>
-        <TD class="Last day">{{usages_timespan_dict['day']}} B</TD>
-        </TR>
-        {% endfor %}
-</table>
+        <div id="table_data" class="row mt-3 table-data">
+          <div class="col-9 col-sm-6 col-md-4">
+                {{ username }}
+          </div>
+          <div class="col col-sm-3 col-md-3 d-none d-sm-block">
+              {{  usages_timespan_dict['day']  }} B
+          </div>
+          <div class="col-3 col-sm-3 col-md-2">
+              {{  usages_timespan_dict['week']  }} B
+          </div>
+          <div class="col-md-3 d-none d-md-block">
+            {{  usages_timespan_dict['month']  }} B
+          </div>
+        </div>
+    {% endfor %}
+</div>
 
 {% endblock %}
