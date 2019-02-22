@@ -1,6 +1,8 @@
 import time
 from collections import defaultdict
 from typing import DefaultDict
+
+from dashboard.plugins.athena_usage.athena_query_model import TIMESTAMP_FORMAT
 from .query_dao import *
 
 

@@ -15,10 +15,10 @@ class QueryState(Enum):
 
 @dataclass
 class AthenaQuery:
-    start_date: str
-    start_timestamp: str
-    query_execution_id: str
-    query_state: str
-    executing_user: str
+    start_date: str = None
+    start_timestamp: str = None
+    query_execution_id: str = None
+    query_state: str = None
+    executing_user: str = None
     data_scanned: int = 0
     query_sql: str = None

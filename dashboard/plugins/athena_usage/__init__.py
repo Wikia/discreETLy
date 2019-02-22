@@ -18,7 +18,7 @@ def init(app):
                  aws_access_key_id=app.config['ATHENA_USAGE_PARAMS']['aws_access_key_id'],
                  aws_secret_access_key=app.config['ATHENA_USAGE_PARAMS']['aws_secret_access_key'],
                  region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
-    dynamodb = boto3.resource('dynamodb', region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
+    dynamodb = boto3.client('dynamodb', region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
 
     app.athena_summary_provider = AthenaSummaryProvider(app.config['ATHENA_USAGE_PARAMS'], dynamodb, app.logger)
 
