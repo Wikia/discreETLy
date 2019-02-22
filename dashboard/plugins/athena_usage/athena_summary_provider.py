@@ -31,18 +31,21 @@ class AthenaSummaryProvider:
             # convert queries str start_timestamp to float for easier comparisons
             query_timestamp_from_date = time.mktime(datetime.strptime(query.start_timestamp, TIMESTAMP_FORMAT).timetuple())
 
+            normalized_name = self.__normalize_username(query.executing_user)
+
             # add query's size to monthly usage (it's guaranteed to be in the last 30 days)
-            summary_dict[query.executing_user]['month']+=query.data_scanned
+            summary_dict[normalized_name]['month']+=query.data_scanned
 
             # check if a query is less than a week old
             if time.time() - query_timestamp_from_date <= 7 * 24 * 60 * 60:
-                summary_dict[query.executing_user]['week'] += query.data_scanned
+                summary_dict[normalized_name]['week'] += query.data_scanned
 
                 # check if a query is less than a day old
                 if time.time() - query_timestamp_from_date <= 1 * 24 * 60 * 60:
-                    summary_dict[query.executing_user]['day'] += query.data_scanned
+                    summary_dict[normalized_name]['day'] += query.data_scanned
 
         return summary_dict
 
-            
-            
+    def __normalize_username(self, raw_name: str) -> str:
+        """ Normalize usernames to count both @name and name as the same """
+        return raw_name[1:] if raw_name[0] == '@' else raw_name
