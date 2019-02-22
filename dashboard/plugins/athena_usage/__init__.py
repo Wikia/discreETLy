@@ -25,6 +25,6 @@ def init(app):
 @plugin.route('/')
 def index():
     return render_template('athena_usage/index.html',
-                           summary_user_timespan_size = app.athena_summary_provider.summary_user_timespan_size)
+                           summary_user_timespan_size = sorted(app.athena_summary_provider.summary_user_timespan_size.items()))
 
 

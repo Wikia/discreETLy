@@ -34,7 +34,7 @@ class AthenaSummaryProvider:
             normalized_name = self.__normalize_username(query.executing_user)
 
             # add query's size to monthly usage (it's guaranteed to be in the last 30 days)
-            summary_dict[normalized_name]['month']+=query.data_scanned
+            summary_dict[normalized_name]['month'] += query.data_scanned
 
             # check if a query is less than a week old
             if time.time() - query_timestamp_from_date <= 7 * 24 * 60 * 60:
