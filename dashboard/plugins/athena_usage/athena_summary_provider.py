@@ -3,6 +3,7 @@ from collections import defaultdict
 from typing import DefaultDict
 
 from dashboard.plugins.athena_usage.athena_query_model import TIMESTAMP_FORMAT
+from dashboard.utils import sizeof_fmt
 from .query_dao import *
 
 
@@ -13,17 +14,20 @@ class AthenaSummaryProvider:
 
     def __init__(self, config: dict, dynamodb, logger):
         self.logger = logger
-        self.__query_dao = QueryDao(config, dynamodb, self.logger)
+        self._query_dao = QueryDao(config, dynamodb, self.logger)
+        # TODO: this needs to communicate with cached db states
 
     @property
-    def summary_user_timespan_size(self) -> DefaultDict[str, DefaultDict[str, int]]:
+    def _summary_user_timespan_size_B(self) -> DefaultDict[str, DefaultDict[str, int]]:
         """
         This gets a username dict containing a sum of size of user's queries in
-        three timespans: last month, week, and a day
-        :return: Dict[username] -> Dict['month' | 'week' | 'day'] -> sum(sizes)
+        three timespans: last month, week, and a day.
+
+        Sizes are given in Bytes or default db's 'data_scanned' unit
+        :return: Dict[username] -> Dict['month' | 'week' | 'day'] -> sum(sizes in Bytes)
         """
         # looking only 30 days back since it's the most we are going to present
-        all_queries_list = self.__query_dao.get_finished_queries_for_days_back(30)
+        all_queries_list = self._query_dao.get_finished_queries_for_days_back(30)
 
         # prepare a dict of username: dict(daily, weekly, monthly usage)
         summary_dict = defaultdict(lambda: defaultdict(lambda: 0))
@@ -45,6 +49,25 @@ class AthenaSummaryProvider:
                     summary_dict[normalized_name]['day'] += query.data_scanned
 
         return summary_dict
+
+    # TODO: add an 'all' entry that is displayed on top
+
+    @property
+    def summary_user_timespan_size(self) -> DefaultDict[str, DefaultDict[str, str]]:
+        """
+        This gets a username dict containing a sum of size of user's queries in
+        three timespans: last month, week, and a day.
+
+        Sizes are given as a 'size:int unit:str':str in the appropriate unit
+        :return: Dict[username] -> Dict['month' | 'week' | 'day'] -> sum(str(size unit))
+        """
+        summary_dict = self._summary_user_timespan_size_B
+        for username in summary_dict.keys():
+            for timespan in summary_dict[username].keys():
+                summary_dict[username][timespan] = sizeof_fmt(int(summary_dict[username][timespan]))
+        return summary_dict
+
+
 
     def __normalize_username(self, raw_name: str) -> str:
         """ Normalize usernames to count both @name and name as the same """
