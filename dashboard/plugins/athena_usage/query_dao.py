@@ -22,46 +22,22 @@ class QueryDao:
         :parameter timespan_days: int number of days to go back
         :return: list of AthenaQueries containing the request made in that timespan
         """
+
         # prepare a list of str dates of days going from now to number timespan_days: int back
-
         days_back_dates_str = [datetime.strftime(datetime.now() - timedelta(days=days_back), DATE_FORMAT) for days_back in range(0, timespan_days + 1)]
-        # prepare a batch request body
-        # prepared_days_request_items = {
-        #                    f"{self.config['QUERIES_TABLE']}": {
-        #                        'Keys': [{'start_date': date_timestamp_pair.date, 'start_timestamp': date_timestamp_pair.db_timestamp} for date_timestamp_pair in dates_timestamps_pairs_for_days_back]}
-        #                }
 
-        # # Attr('query_state').eq('SUCCEEDED')
-        # batch_get_finished_queries_for_days_function_call = functools.partial(self.dynamodb.batch_get_item,
-        #                                                                       RequestItems=prepared_days_request_items)
-        #
-        # response = batch_get_finished_queries_for_days_function_call()
-        # data = response['Responses']
-        # self.logger.debug(response['Responses'])
-        #
-        # # check for paginated results
-        # while response.get('UnprocessedKeys'):
-        #     response = batch_get_finished_queries_for_days_function_call(
-        #         ExclusiveStartKey=response['UnprocessedKeys'])
-        #     data.extend(response['Responses'])
-
-        self.logger.debug("athena_usage starting querying athena database")
-
-
-        # DEBUG: one can reduce number of queries here to check for operations
-        # without worrying about timeouts
-        # results: List[AthenaQuery] = functools.reduce(operator.concat,
-        #                                               map(self.__query_specific_date, days_back_dates_str[0:1]))
+        self.logger.debug(f"athena_usage starting querying {self.config['QUERIES_TABLE']} table")
         # TODO: this map function call can be threaded for speed improvements
         results: List[AthenaQuery] = functools.reduce(operator.concat,
                                                       map(self.__query_specific_date, days_back_dates_str))
-        self.logger.debug("athena_usage finished querying athena database")
+        self.logger.debug(f"athena_usage finished querying {self.config['QUERIES_TABLE']} table")
         return results
 
     def __query_specific_date(self, date) -> List[AthenaQuery]:
         """
         Private method to query for all queries
         made on a particular date with data_scanned > 0
+
         :param date: str date of DATE_FORMAT
         :return: List of AthenaQuery, results of this operation
         """
@@ -69,7 +45,7 @@ class QueryDao:
         # due to higher level resource query not allowing to filter
         # data_scanned > 0
 
-        # start_timestamp is queried for 'true' 24h days calculation
+        # start_timestamp is additionally queried for 'true' 24h days calculation
         # instead of a 'day' being 24h +- 11.59h
         query_finished_queries_for_days_function_call = functools.partial(
             self.dynamodb.query,
