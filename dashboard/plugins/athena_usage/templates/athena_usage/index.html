@@ -22,10 +22,10 @@
         <div class="col-3 col-sm-3 col-md-2">Weekly</div>
         <div class="col-md-3 d-none d-md-block">Monthly</div>
     </div>
-    {% for username, usages_timespan_dict in summary_user_timespan_size %}
+    {% for name, usages_timespan_dict in summary_specials_timespan_size + summary_user_timespan_size %}
         <div id="table_data" class="row mt-3 table-data">
           <div class="col-9 col-sm-6 col-md-4">
-                {{ username }}
+              {{ name }}
           </div>
           <div class="col col-sm-3 col-md-3 d-none d-sm-block">
               {{  usages_timespan_dict['day']  }}

@@ -22,9 +22,16 @@ def init(app):
 
     app.athena_summary_provider = AthenaSummaryProvider(app.config['ATHENA_USAGE_PARAMS'], dynamodb, app.logger)
 
+
 @plugin.route('/')
 def index():
+    summary_users_dict, summary_specials_dict = app.athena_summary_provider.summary_user_timespan_size
+
+    # sort both summaries alphabetically
+    summary_users_dict, summary_specials_dict = sorted(summary_users_dict.items()), (sorted(summary_specials_dict.items()))
+
     return render_template('athena_usage/index.html',
-                           summary_user_timespan_size = sorted(app.athena_summary_provider.summary_user_timespan_size.items()))
+                           summary_specials_timespan_size=summary_specials_dict,
+                           summary_user_timespan_size=summary_users_dict)
 
 
