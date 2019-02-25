@@ -2,7 +2,7 @@ import time
 from collections import defaultdict
 from typing import DefaultDict, Tuple
 
-from dashboard.plugins.athena_usage.athena_query_model import TIMESTAMP_FORMAT
+from dashboard.plugins.athena_usage.athena_query_model import TIMESTAMP_FORMAT, Timespan
 from dashboard.utils import sizeof_fmt
 from .query_dao import *
 
@@ -32,7 +32,7 @@ class AthenaSummaryProvider:
                     Dict[special_summary] -> Dict['month' | 'week' | 'day'] -> sum(sizes in Bytes)]
         """
         # looking only 30 days back since it's the most we are going to present
-        all_queries_list = self._query_dao.get_finished_queries_for_days_back(30)
+        all_queries_set = self._query_dao.queries_last_30_days
 
         # prepare a dict of username: dict(daily, weekly, monthly usage)
         summary_user_dict = defaultdict(lambda: defaultdict(lambda: 0))
@@ -41,25 +41,26 @@ class AthenaSummaryProvider:
         # e.g. special_summaries use: sum for all users, grouping by role, by team..
         special_summaries_dict = defaultdict(lambda: defaultdict(lambda: 0))
 
-        for query in all_queries_list:
+        for query in all_queries_set:
             # convert queries str start_timestamp to float for easier comparisons
             query_timestamp_from_date = time.mktime(datetime.strptime(query.start_timestamp, TIMESTAMP_FORMAT).timetuple())
 
             normalized_name = self._normalize_username(query.executing_user)
 
-            # add query's size to monthly usage (it's guaranteed to be in the last 30 days)
-            summary_user_dict[normalized_name]['month'] += query.data_scanned
-            special_summaries_dict[self.ALL_USERS_KEY]['month'] += query.data_scanned
+            # check if a query is less than a month old
+            if time.time() - query_timestamp_from_date <= Timespan.MONTH.value:
+                summary_user_dict[normalized_name]['month'] += query.data_scanned
+                special_summaries_dict[self.ALL_USERS_KEY]['month'] += query.data_scanned
 
-            # check if a query is less than a week old
-            if time.time() - query_timestamp_from_date <= 7 * 24 * 60 * 60:
-                summary_user_dict[normalized_name]['week'] += query.data_scanned
-                special_summaries_dict[self.ALL_USERS_KEY]['week'] += query.data_scanned
+                # check if a query is less than a week old.
+                if time.time() - query_timestamp_from_date <= Timespan.WEEK.value:
+                    summary_user_dict[normalized_name]['week'] += query.data_scanned
+                    special_summaries_dict[self.ALL_USERS_KEY]['week'] += query.data_scanned
 
-                # check if a query is less than a day old
-                if time.time() - query_timestamp_from_date <= 1 * 24 * 60 * 60:
-                    summary_user_dict[normalized_name]['day'] += query.data_scanned
-                    special_summaries_dict[self.ALL_USERS_KEY]['day'] += query.data_scanned
+                    # check if a query is less than a day old
+                    if time.time() - query_timestamp_from_date <= Timespan.DAY.value:
+                        summary_user_dict[normalized_name]['day'] += query.data_scanned
+                        special_summaries_dict[self.ALL_USERS_KEY]['day'] += query.data_scanned
 
         return summary_user_dict, special_summaries_dict
 
