@@ -29,7 +29,8 @@ class QueryDao:
 
         :return: set of AthenaQueries containing the request made in the last 30 days
         """
-        # TODO: this makes
+        # TODO: this caching is very much inefficient due to not being shared between workers
+        # TODO: sqllite or other db solution is required
         # if no previous queries are cached
         if self._query_cache is None:
             self._query_cache = self._get_finished_queries_for_days_back(30)
