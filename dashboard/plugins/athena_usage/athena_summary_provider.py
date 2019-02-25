@@ -1,8 +1,6 @@
-import time
 from collections import defaultdict
 from typing import DefaultDict, Tuple
 
-from dashboard.plugins.athena_usage.athena_query_model import TIMESTAMP_FORMAT, Timespan
 from dashboard.utils import sizeof_fmt
 from .query_dao import *
 
@@ -17,7 +15,6 @@ class AthenaSummaryProvider:
     def __init__(self, config: dict, dynamodb, logger):
         self.logger = logger
         self._query_dao = QueryDao(config, dynamodb, self.logger)
-        # TODO: this needs to communicate with cached db states
 
     @property
     def _summary_user_timespan_size_B(self) -> Tuple[DefaultDict[str, DefaultDict[str, int]], DefaultDict[str, DefaultDict[str, int]]]:

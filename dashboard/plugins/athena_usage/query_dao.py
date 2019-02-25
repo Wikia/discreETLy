@@ -1,13 +1,14 @@
-import operator
+from calendar import timegm
 from datetime import datetime, timedelta
 import time
-from typing import List, Set
+from typing import Set
 import functools
 from math import ceil
 
 from boto3.dynamodb.types import TypeDeserializer
 
-from .athena_query_model import AthenaQuery, DATE_FORMAT, Timespan
+from .athena_query_model import AthenaQuery, DATE_FORMAT, Timespan, \
+    TIMESTAMP_FORMAT
 
 
 class QueryDao:
@@ -28,6 +29,7 @@ class QueryDao:
 
         :return: set of AthenaQueries containing the request made in the last 30 days
         """
+        # TODO: this makes
         # if no previous queries are cached
         if self._query_cache is None:
             self._query_cache = self._get_finished_queries_for_days_back(30)
@@ -43,7 +45,18 @@ class QueryDao:
             self._query_cache.update(new_queries)
             self._last_cached_time = time.time()
 
+            # remove unnecessary, old queries from cache
+            self._remove_unnecessary_cached_queries()
+
         return self._query_cache
+
+    def _remove_unnecessary_cached_queries(self):
+        """
+        Removes cached queries older than a month from memory
+        in order to prevent cache swelling up in size
+        """
+        self._query_cache = set(filter(lambda x: time.time() - timegm(time.strptime(x.start_timestamp, TIMESTAMP_FORMAT)) < Timespan.MONTH.value,
+                                   self._query_cache))
 
     def _get_finished_queries_for_days_back(self, timespan_days: int) -> Set[AthenaQuery]:
         """
