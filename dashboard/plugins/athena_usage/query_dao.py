@@ -13,7 +13,6 @@ class QueryDao:
     def __init__(self, config, dynamodb, logger):
         self.config = config
         self.dynamodb = dynamodb
-        # self.queries_table = self.dynamodb.Table(self.config['QUERIES_TABLE'])
         self.logger = logger
 
     def get_finished_queries_for_days_back(self, timespan_days: int) -> List[AthenaQuery]:
@@ -24,7 +23,7 @@ class QueryDao:
         """
 
         # prepare a list of str dates of days going from now to number timespan_days: int back
-        days_back_dates_str = [datetime.strftime(datetime.now() - timedelta(days=days_back), DATE_FORMAT) for days_back in range(0, timespan_days + 1)]
+        days_back_dates_str = [datetime.strftime(datetime.now() - timedelta(days=days_back), DATE_FORMAT) for days_back in range(timespan_days + 1)]
 
         self.logger.debug(f"athena_usage starting querying {self.config['QUERIES_TABLE']} table")
         # TODO: this map function call can be threaded for speed improvements

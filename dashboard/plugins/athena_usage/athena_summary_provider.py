@@ -38,8 +38,9 @@ class AthenaSummaryProvider:
         summary_user_dict = defaultdict(lambda: defaultdict(lambda: 0))
 
         # prepare a dict of special_summary: dict(daily, weekly, monthly usage)
-        # e.g. special_summary = sum for all users
+        # e.g. special_summaries use: sum for all users, grouping by role, by team..
         special_summaries_dict = defaultdict(lambda: defaultdict(lambda: 0))
+
         for query in all_queries_list:
             # convert queries str start_timestamp to float for easier comparisons
             query_timestamp_from_date = time.mktime(datetime.strptime(query.start_timestamp, TIMESTAMP_FORMAT).timetuple())
