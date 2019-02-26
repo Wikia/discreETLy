@@ -1,3 +1,4 @@
 .idea/*
+*/.idea/*
 *.pyc
 settings.py

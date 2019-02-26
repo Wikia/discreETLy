@@ -78,4 +78,12 @@ REFRESH_RATE=300
 #    'aws_secret_access_key': '....'
 #}
 
+# The following lines configure athena_usage plugin. See plugin documentation for more information.
+#ATHENA_USAGE_PARAMS = {
+#    'QUERIES_TABLE': '....',
+#    'region_name': '....'
+#    'aws_access_key_id': '....',
+#    'aws_secret_access_key': '....',
+#}
+
 
