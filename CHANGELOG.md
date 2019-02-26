@@ -1,3 +1,10 @@
+# VERSION 0.2.6
+
+## Plugins
+
+### Changes
+* New plugin added: Athena Usage [(documentation)](dashboard/plugins/athena_usage/README.md)
+
 # VERSION 0.2.5
 
 ## Base
