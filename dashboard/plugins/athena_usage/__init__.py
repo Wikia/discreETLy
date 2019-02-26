@@ -14,11 +14,10 @@ plugin = Blueprint('athena_usage', __name__, template_folder='templates')
 
 
 def init(app):
-    boto3.client('athena',
-                 aws_access_key_id=app.config['ATHENA_USAGE_PARAMS']['aws_access_key_id'],
-                 aws_secret_access_key=app.config['ATHENA_USAGE_PARAMS']['aws_secret_access_key'],
-                 region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
-    dynamodb = boto3.client('dynamodb', region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
+    dynamodb = boto3.client('dynamodb',
+                            aws_access_key_id=app.config['ATHENA_USAGE_PARAMS']['aws_access_key_id'],
+                            aws_secret_access_key=app.config['ATHENA_USAGE_PARAMS']['aws_secret_access_key'],
+                            region_name=app.config['ATHENA_USAGE_PARAMS']['region_name'])
 
     app.athena_summary_provider = AthenaSummaryProvider(app.config['ATHENA_USAGE_PARAMS'], dynamodb, app.logger)
 
