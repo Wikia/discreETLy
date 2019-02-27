@@ -60,7 +60,7 @@ def test_sunburst_data_on_root(s3stats):
 
     # then
     expected_response = [
-        {'id': 1, 'size': 0, 'name': '', 'size_fmt': '5.0MiB'}, 
+        {'id': 1, 'size': 0, 'name': 'all buckets', 'size_fmt': '5.0MiB'}, 
         {'id': 2, 'size': 0, 'name': 'discreetly-bucket1', 'size_fmt': '3.0MiB', 'parent': 1}, 
         {'id': 3, 'size': 0, 'name': 'table', 'size_fmt': '3.0MiB', 'parent': 2}, 
         {'id': 4, 'size': 3145728, 'name': 'year=2019', 'size_fmt': '3.0MiB', 'parent': 3}, 

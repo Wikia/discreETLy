@@ -34,7 +34,7 @@ def setup_authentication(app):
         return redirect(session.get('next', '/'))
 
     def ensure_user_is_authorized(app):
-        if 'user' not in session and request.path not in ['/oauth/login', '/oauth/auth', '/login', '/healthcheck']:
+        if 'user' not in session and request.path not in ['/oauth/login', '/oauth/auth', '/login', '/healthcheck'] and not request.path.startswith('/static/'):
             session['next'] = request.url
             return redirect(url_for('page.login'))
 

@@ -1,3 +1,12 @@
+# VERSION 0.2.7
+
+## Base
+
+### Fixes
+
+* Fixed Firefox autorefresh issue on Table Descriptions and S3 Usage tabs 
+* Favicon added
+
 # VERSION 0.2.6
 
 ## Plugins

@@ -42,10 +42,11 @@ class S3Stats:
         for idx, row in enumerate(self.db.query(base, depth=(base_depth, base_depth + size), order='alphabetically')):
             path = row['path']
             path_split = path.split('/')
+            name = path_split[-1] if path_split[-1] != '' else 'all buckets'
             data[path] = {
                 'id': idx+1, 
                 'size': row['size'], 
-                'name': path_split[-1],
+                'name': name,
                 'size_fmt': sizeof_fmt(row['size']) } 
             parent_dir = '/'.join(path_split[:-1])
             if path != '' and parent_dir in data:
