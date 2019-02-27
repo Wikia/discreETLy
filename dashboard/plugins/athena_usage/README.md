@@ -14,7 +14,7 @@ ATHENA_USAGE_PARAMS = {
     'aws_secret_access_key': '....'}
 ```
  * `QUERIES_TABLE` - name of the table where queries' metadata are stored
- * `region_name` - AWS region where `QUERIES_TABLE` is stored
+ * `region_name` - AWS region where dynamodb is stored
  * `aws_access_key_id` and `aws_secret_access_key` - credentials to be used to communicate
    with AWS API
 
