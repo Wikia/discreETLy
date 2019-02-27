@@ -1,7 +1,7 @@
 # Athena Usage plugin
 
 Athena Usage shows summarised daily, weekly and monthly data usage in Athena queries for an `executing_user`.
-This plugins aims to help users track their queries' efficiency.
+This plugin aims to help users track their queries' efficiency.
 
 Relies on accessing `QUERIES_TABLE`, storing queries' info.
 
