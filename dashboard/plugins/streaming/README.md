@@ -2,7 +2,9 @@
 
 The Streaming tab lists the applications that consume a data streams and put the records
 to the Data Warehouse. Each row contains a stream name, link to external monitoring screen
-(for example AWS Kinesis Monitoring tab) and status of the stream.
+(for example AWS Kinesis Monitoring tab) and status of the stream. Also a time series chart
+is presented, showing the lag of stream consumption (values are provided by LagProvider 
+implementation and currently only InfluxDB is supported).
 
 Status is based on the alerts provided by Prometheus, but assigned to the tables that
 are filled by dumping the stream. The configuration file requires you to provide a list 

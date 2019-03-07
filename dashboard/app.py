@@ -15,6 +15,7 @@ from werkzeug.contrib.cache import SimpleCache
 from dashboard.blueprints.page import page
 from dashboard.dataproviders import *
 from dashboard.service.mysql import MySQLClient
+from dashboard.service.influxdb_service import InfluxDbService
 from dashboard.model.influxdb_data import InfluxDBData
 from dashboard.model.prometheus_data import PrometheusData
 from dashboard.model.tables_data import TableDataProvider
@@ -79,7 +80,8 @@ def create_app(settings_override=None):
         plugins[plugin] = {'tab_name': module.tab_name}
 
     app.airflow_data_provider = AirflowDBDataProvider(app.config, app.logger, MySQLClient(app.config, app.logger))
-    app.influx_data_provider = InfluxDBData(app.config, app.logger) if app.config.get('INFLUXDB_HOST') else None
+    app.influx_client = InfluxDbService(app.config, app.logger) if app.config.get('INFLUXDB_HOST') else None
+    app.influx_data_provider = InfluxDBData(app.influx_client, app.logger) if app.config.get('INFLUXDB_HOST') else None
     app.prometheus_data_provider = PrometheusData(app.config, app.logger) if app.config.get('PROMETHEUS_HOST') else None
     
     # Reading tables configs, setting variable to `None` if file is not present
