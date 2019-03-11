@@ -2,8 +2,8 @@ import datetime
 from dashboard.service.influxdb_service import InfluxDbService
 
 class InfluxDBData:
-    def __init__(self, config, logger):
-        self.influx = InfluxDbService(config, logger)
+    def __init__(self, influx, logger):
+        self.influx = influx
         self.logger = logger
 
     def get_influx_stats(self, table, days):

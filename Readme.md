@@ -1,8 +1,8 @@
 # DiscreETLy
 
 [![Build Status](https://travis-ci.org/Wikia/discreETLy.svg?branch=master)](https://travis-ci.org/Wikia/discreETLy)
-[![](https://images.microbadger.com/badges/image/fandom/discreetly:0.2.7.svg)](https://microbadger.com/images/fandom/discreetly:0.2.7 "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/fandom/discreetly:0.2.7.svg)](https://microbadger.com/images/fandom/discreetly:0.2.7 "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/fandom/discreetly:0.2.8.svg)](https://microbadger.com/images/fandom/discreetly:0.2.8 "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/fandom/discreetly:0.2.8.svg)](https://microbadger.com/images/fandom/discreetly:0.2.8 "Get your own version badge on microbadger.com")
 
 **DiscreETLy** is an add-on dashboard service on top of [Apache Airflow](https://github.com/apache/incubator-airflow). It is a user friendly UI showing status of particular DAGs. Moreover, it allows the users to map Tasks within a particular DAG to tables available in any system (relational and non-relational) via friendly yaml definition. **DiscreETLy** provides fuctionality for monitoring DAGs status as well as optional communication with services such as [Prometheus](https://prometheus.io/) or [InfluxDB](https://www.influxdata.com/).
 

@@ -1,3 +1,10 @@
+# VERSION 0.2.8
+
+## Plugins
+
+### Changes
+* Streaming tab now shows the lag of stream consumption on time-based graph (last day/week/month)
+
 # VERSION 0.2.7
 
 ## Base

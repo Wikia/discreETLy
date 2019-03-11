@@ -1,11 +1,11 @@
 {% extends 'layouts/base.html' %} {% import 'macros/common.html' as common with context %}
 
-{% block title %}{{ config['EXTRA_TAB'] }}{% endblock %}
+{% block title %}Streaming{% endblock %}
 
 {% block nav %}
 
 <li class="breadcrumb-item"><a href="/">Home</a></li>
-<li class="breadcrumb-item"><a href="/extra">{{ config['EXTRA_TAB'] }}</a></li>
+<li class="breadcrumb-item"><a href="/extra">Streaming</a></li>
 
 {% endblock %} 
 
@@ -13,29 +13,91 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/etl_dashboard.css') }}">
 
-<div id="list-container" style="width:55%;margin:auto">
+<div id="list-container">
     <div id="table-container">
+
         <div class="row mt-2 table-header">
-            <div class="col-4 col-sm-5 col-md-4 col-xl-4">Streaming name</div>
-            <div class="col-4 col-sm-5 col-md-4 col-xl-4">Streaming table</div>
-            <div class="col-3 col-xl-3">Status (&#x2705; or &#x274C;)</div>
+            <div class="col-6 col-sm-5 col-lg-3">Streaming name</div>
+            <div class="col-6 col-sm-5 col-lg-3">Streaming table</div>
+            <div class="col-1 col-sm-2 col-lg-1">Status</div>
+            <div class="col-11 col-lg-5">Lag [
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod30d" value="30d">
+                <label class="form-check-label" for="lagPeriod30d">30d</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod7d" value="7d" checked>
+                <label class="form-check-label" for="lagPeriod7d">7d</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod1d" value="1d">
+                <label class="form-check-label" for="lagPeriod1d">1d</label>
+              </div>
+          ]
+          </div>
         </div>
         {% for stream in streams %}
         <div class="row mt-2 etl-data">
-            <div class="col-4 col-sm-5 col-md-4 col-xl-4"><a href="{{ stream.link }}">{{ stream.name }}</a></div>
-            <div class="col-4 col-sm-4 col-md-2 col-xl-4">
+            <div class="col-6 col-sm-5 col-lg-3"><a href="{{ stream.link }}">{{ stream.name }}</a></div>
+            <div class="col-6 col-sm-5 col-lg-3">
                 {{ stream.table }}
             </div>
-            <div class="col-3 col-xl-3">
+            <div class="col-1 col-sm-2 col-lg-1">
                 {% if stream.active_alerts %}
                     <p>&#x274C;</p>
                 {% else %}
                     <p>&#x2705;</p>
                 {% endif %}
             </div>
+            <div class="col-11 col-sm-12 col-lg-5">
+              <div id="lag_{{ stream.name }}"></div>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+var lagPeriod = '7d';
+$('input[type="radio"]').on('click', function(e) {
+    lagPeriod = e.target.value;
+    console.log('lag ' + lagPeriod)
+    drawLagCharts()
+});
+
+function drawLagCharts() {
+  {% for stream in streams %}
+    $('#lag_{{ stream.name }}').empty();
+    drawLagChart('#lag_{{ stream.name }}', 'api/lag/{{ stream.name }}/{{ stream.table }}/' + lagPeriod);
+  {% endfor %}
+}
+
+function drawLagChart(divId, apiUrl) {
+  vegaEmbed(divId, {
+    "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+    "width": 300,
+    "height": 150,
+    "data": {
+        "url": apiUrl
+    },
+    "mark": "line",
+    "encoding": {
+        "x": {
+            "field": "time",
+            "type": "temporal"
+        },
+        "y": {
+            "field": "lag",
+            "type": "quantitative"
+        }
+    }
+  }, {"actions": false})
+}
+
+drawLagCharts();
+</script>
 
 {% endblock %}
