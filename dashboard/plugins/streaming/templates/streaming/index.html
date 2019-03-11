@@ -21,18 +21,19 @@
             <div class="col-6 col-sm-5 col-lg-3">Streaming table</div>
             <div class="col-1 col-sm-2 col-lg-1">Status</div>
             <div class="col-11 col-lg-5">Lag [
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod30d" value="30d">
-    <label class="form-check-label" for="lagPeriod30d">30d</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod7d" value="7d" checked>
-    <label class="form-check-label" for="lagPeriod7d">7d</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod1d" value="1d">
-    <label class="form-check-label" for="lagPeriod1d">1d</label>
-  </div>]
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod30d" value="30d">
+                <label class="form-check-label" for="lagPeriod30d">30d</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod7d" value="7d" checked>
+                <label class="form-check-label" for="lagPeriod7d">7d</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="lagPeriod" id="lagPeriod1d" value="1d">
+                <label class="form-check-label" for="lagPeriod1d">1d</label>
+              </div>
+          ]
           </div>
         </div>
         {% for stream in streams %}
