@@ -1,3 +1,10 @@
+# VERSION 0.2.9
+
+## Plugins
+
+### Changes
+* Fix rendering of page with "Tables managed by ..."
+
 # VERSION 0.2.8
 
 ## Plugins
