@@ -81,7 +81,8 @@ class TableDataProvider:
     def get_tables_graph(self, dag_id, execution_date):
         name_without_version = clean_dag_id(dag_id)
         dag_tables = self.get_tables_by_dag(name_without_version)
-        dag_progess = {d.task_id: d for d in self.airflow.get_dag_tasks(dag_id, execution_date)}
+        dag_progress = {d.task_id: d for d in self.airflow.get_dag_tasks(dag_id, execution_date)}
+
 
         # root node - dag name
         yield GraphVertex(id='main', name=name_without_version,
@@ -92,10 +93,10 @@ class TableDataProvider:
             yield GraphVertex(
                 id=table.id,
                 name=table.name + (' ({})'.format(table.period.name) if table.period else ''),
-                state=dag_progess[table.task_id].task_state,
+                state=dag_progress[table.task_id].task_state,
                 tooltip='Finished at: {}, duration: {}'.format(
-                    dag_progess[table.task_id].end_date,
-                    dag_progess[table.task_id].duration
+                    dag_progress[table.task_id].end_date,
+                    dag_progress[table.task_id].duration
                 ),
                 parent=table.get_parent()
             )
