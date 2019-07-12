@@ -1,16 +1,22 @@
-- name: raw_table
+- name: popular_raw_table
   db: dbname
   dag_id: my_dag
-  task_id: raw_table_insert
+  task_id: popular_raw_table_insert
 
 - name: fact_table
   db: dbname
   dag_id: my_dag
   task_id: fact_table_insert
-  uses: dbname.raw_table
+  uses: dbname.popular_raw_table
 
 - name: rollup_table
   db: dbname
   dag_id: my_dag
   task_id: rollup_table_insert
   uses: dbname.fact_table
+
+# redeclaring popular_raw_table for use with another DAG
+- name: popular_raw_table
+  db: dbname
+  dag_id: another_dag_tha
+  task_id: popular_raw_table_sensor

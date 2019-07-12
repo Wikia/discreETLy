@@ -14,6 +14,9 @@ why a mapping needs to be provided to **discreETLy**. A mapping can be defined i
 - `dag_id` - id of a DAG that contains the task required for the mapping
 - `task_id` - id of the task that populates the table
 
+
+If several DAGs use the same table, it needs to be redeclared with each `dag_id` for the table to be supported by `Tables managed by DAG` view.  
+ 
 See [example file](tables.yaml.template) for more details on the data structure. 
 
 The application will automatically ingest the definition of the tables and map them to particular tasks.
