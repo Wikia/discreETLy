@@ -1,5 +1,6 @@
 import csv
 from concurrent.futures import ThreadPoolExecutor
+from typing import Dict
 
 from dashboard.models import Period, Table
 from dashboard.utils import clean_dag_id, handle_resource, simple_state
@@ -43,7 +44,6 @@ DETAILED_CHART_DAYS_NUM = 30
 
 class TableDataProvider:
 
-
     @staticmethod
     def _format_table_id(table):
         id = table['db'] + '.' + table['name']
@@ -75,8 +75,8 @@ class TableDataProvider:
     def history(self, table):
         return self.__get_detailed_view_data(self.tables[table], DETAILED_CHART_DAYS_NUM)
 
-    def get_tables_by_dag(self, dag_name):
-        return [table for table in self.tables.values() if table.dag_id == dag_name]
+    def get_tables_by_dag(self, dag_name) -> Dict[str, Table]:
+        return {id: table for id, table in self.tables.items() if table.dag_id == dag_name}
 
     def get_tables_graph(self, dag_id, execution_date):
         name_without_version = clean_dag_id(dag_id)
@@ -89,7 +89,7 @@ class TableDataProvider:
                           state=self.airflow.get_dag_state(dag_id, execution_date))
 
         # tables
-        for table in dag_tables:
+        for table in dag_tables.values():
             yield GraphVertex(
                 id=table.id,
                 name=table.name + (' ({})'.format(table.period.name) if table.period else ''),
@@ -98,7 +98,9 @@ class TableDataProvider:
                     dag_progress[table.task_id].end_date,
                     dag_progress[table.task_id].duration
                 ),
-                parent=table.get_parent()
+                # workaround for table.uses not being able to reference table managed by other DAG
+                # see https://github.com/Wikia/discreETLy/issues/22
+                parent='main' if table.uses is None or table.uses not in dag_tables.keys() else table.uses
             )
 
     @handle_resource('influx')
