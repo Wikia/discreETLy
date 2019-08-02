@@ -24,8 +24,6 @@ Additionally you may want to provide cadence for how often the table is updated 
 Update `id` incrementally starting from 1 for each table redeclared with another cadence.  
 This makes specifying dependency on a particular cadence possible, e.g.: `uses: dbname.frequently_updated.daily`.
   
-If several DAGs use the same table, it needs to be redeclared with each `dag_id` for the table to be supported by 
- `Tables managed by DAG` view.  
  
 See [example file](tables.yaml.template) for more details on the data structure. 
 
