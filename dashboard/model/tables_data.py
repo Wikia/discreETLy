@@ -90,10 +90,6 @@ class TableDataProvider:
 
         # tables
         for table in dag_tables.values():
-            # TODO: link to discreEtly bug report and use this discreetly's table
-            if table.uses not in dag_tables.keys():
-                table.uses = None
-
             yield GraphVertex(
                 id=table.id,
                 name=table.name + (' ({})'.format(table.period.name) if table.period else ''),
@@ -102,7 +98,9 @@ class TableDataProvider:
                     dag_progress[table.task_id].end_date,
                     dag_progress[table.task_id].duration
                 ),
-                parent=table.get_parent()
+                # workaround for table.uses not being able to reference table managed by other DAG
+                # see https://github.com/Wikia/discreETLy/issues/22
+                parent='main' if table.uses is None or table.uses not in dag_tables.keys() else table.uses
             )
 
     @handle_resource('influx')
