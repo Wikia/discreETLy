@@ -98,7 +98,7 @@ class TableDataProvider:
                     dag_progress[table.task_id].end_date,
                     dag_progress[table.task_id].duration
                 ),
-                # workaround for table.uses not being able to reference table managed by other DAG
+                # workaround for this entire method not being able to reference table managed by other DAG in table.uses
                 # see https://github.com/Wikia/discreETLy/issues/22
                 parent='main' if table.uses is None or table.uses not in dag_tables.keys() else table.uses
             )

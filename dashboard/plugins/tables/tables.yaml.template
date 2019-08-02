@@ -23,10 +23,3 @@
   dag_id: my_dag
   task_id: rollup_table_insert
   uses: dbname.frequently_updated_table.daily
-
-# redeclaring popular_raw_table for use with another DAG
-- name: popular_raw_table
-  db: dbname
-  dag_id: another_dag
-  task_id: popular_raw_table_sensor
-
