@@ -51,3 +51,8 @@ def test_inactive_dag_is_hidden():
     assert 'inactive_dag' not in [dag['name'] for dag in status]
     task_instances = set([task.dag_name for task in airflow.get_newest_task_instances()])
     assert 'inactive_dag' not in task_instances
+
+def test_get_last_success_for_manually_marked_task():
+    tasks = airflow.get_last_successful_tasks()
+    succeeded_tasks_ids = [task.task_id for task in tasks]
+    assert 'task_marked_manually' not in succeeded_tasks_ids
