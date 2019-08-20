@@ -18,6 +18,7 @@ INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('operative_data_import_v2.
 INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('heartbeat_v2.0', 0, 1);
 INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('paused_dag_v2.0', 1, 0);
 INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('inactive_dag_v2.0', 0, 0);
+INSERT INTO dag(dag_id, is_paused, is_active) VALUES ('dag_marked_as_success_v2.0', 0, 1);
 
 
 CREATE TABLE `dag_run` (
@@ -76,6 +77,9 @@ VALUES(2000, 'paused_dag_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled
 INSERT INTO dag_run
 (id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
 VALUES(3000, 'inactive_dag_v2.0', '2018-11-12 10:00:00.000', 'success', 'scheduled__2018-11-12T09:00:00+00:00', 0, NULL, NULL, '2018-11-13 10:00:10.033');
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(4000, 'dag_marked_as_success_v2.0', '2019-08-01 01:05:00.000', 'success', 'scheduled__2019-08-01T01:05:00+00:00', 0, NULL, NULL, '2019-08-01 01:05:00.000');
 
 
 CREATE TABLE task_instance (
@@ -1513,3 +1517,5 @@ INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date
 VALUES('heartbeat', 'paused_dag_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success');
 INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date, duration, state)
 VALUES('heartbeat', 'inactive_dag_v2.0', '2018-11-12 10:00:00.000', '2018-11-13 10:27:52.509', '2018-11-13 10:44:39.669', 1007.16, 'success');
+INSERT INTO task_instance (task_id, dag_id, execution_date, start_date, end_date, duration, state)
+VALUES('task_marked_manually', 'dag_marked_as_success_v2.0', '2019-08-01 01:05:00.000', null, null, null, 'success');

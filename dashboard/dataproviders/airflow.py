@@ -34,7 +34,7 @@ class AirflowDBDataProvider:
         last_successful_task_end_date = '''
         SELECT dag_id, task_id, max(end_date) as end_date
         FROM task_instance
-        WHERE state = "success"
+        WHERE state = "success" AND end_date is not null
         GROUP BY dag_id, task_id
         '''
 
@@ -44,7 +44,7 @@ class AirflowDBDataProvider:
         for row in data:
             row['dag_name'] = clean_dag_id(row['dag_id'])
             key = row['dag_name'] + row['task_id']
-            if key in result and row['end_date'] and result[key].end_date > row['end_date']:
+            if key in result and result[key].end_date > row['end_date']:
                 continue # duplicate with dag old version
             result[key] = TaskInstance(**row)
 
