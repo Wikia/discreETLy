@@ -80,7 +80,12 @@ VALUES(3000, 'inactive_dag_v2.0', '2018-11-12 10:00:00.000', 'success', 'schedul
 INSERT INTO dag_run
 (id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
 VALUES(4000, 'dag_marked_as_success_v2.0', '2019-08-01 01:05:00.000', 'success', 'scheduled__2019-08-01T01:05:00+00:00', 0, NULL, NULL, '2019-08-01 01:05:00.000');
-
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(5000, 'multiple_versions_v2.2', '2018-11-11 02:15:00.000', 'success', 'scheduled__2018-11-11T01:15:00+00:00', 0, NULL, NULL, '2018-11-12 02:15:03.660');
+INSERT INTO dag_run
+(id, dag_id, execution_date, state, run_id, external_trigger, conf, end_date, start_date)
+VALUES(5001, 'multiple_versions_v2.3', '2018-11-12 02:15:00.000', 'failure', 'scheduled__2018-11-12T01:15:00+00:00', 0, NULL, NULL, '2018-11-13 09:11:05.990');
 
 CREATE TABLE task_instance (
   task_id varchar(250) NOT NULL,
