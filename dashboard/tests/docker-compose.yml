@@ -2,6 +2,7 @@ version: '3.7'
 services:
   mysql:
     image: 'mariadb'
+    container_name: test_db
     environment:
       - MYSQL_ROOT_PASSWORD=test
       - MYSQL_DATABASE=pytest
@@ -17,6 +18,8 @@ services:
       start_period: 10s
   tests:
     image: dashboard:tests
+    environment:
+      - TEST_DB_HOST=test_db
     depends_on:
       - mysql
     volumes:

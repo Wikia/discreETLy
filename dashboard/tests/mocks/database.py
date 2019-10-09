@@ -2,6 +2,7 @@ import sqlite3
 from dashboard.service.mysql import MySQLClient
 import logging
 import time
+import os
 
 class SqliteService:
 
@@ -29,8 +30,9 @@ class SqliteService:
 class MysqlService:
 
     def __init__(self):
+        db_host = os.getenv('TEST_DB_HOST')
         configuration = {
-            'AIRFLOW_DB_HOST': 'tests_mysql_1',
+            'AIRFLOW_DB_HOST': db_host,
             'AIRFLOW_USERNAME': 'root',
             'AIRFLOW_PASSWORD': 'test',
             'AIRFLOW_DATABASE': 'pytest'
