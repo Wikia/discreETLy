@@ -1,6 +1,8 @@
-import os
 import sqlite3
-
+from dashboard.service.mysql import MySQLClient
+import logging
+import time
+import os
 
 class SqliteService:
 
@@ -24,3 +26,39 @@ class SqliteService:
             return [dict(item) for item in cursor.fetchall()]
         finally:
             cursor.close()
+
+class MysqlService:
+
+    def __init__(self):
+        db_host = os.getenv('TEST_DB_HOST')
+        configuration = {
+            'AIRFLOW_DB_HOST': db_host,
+            'AIRFLOW_USERNAME': 'root',
+            'AIRFLOW_PASSWORD': 'test',
+            'AIRFLOW_DATABASE': 'pytest'
+        }
+
+        logger = logging.getLogger('pytest')
+
+        retries = 0
+        connected = False
+        last_error = None
+        while not connected and retries < 10:
+            try:
+                self.db = MySQLClient(configuration, logger)
+                connected = True
+            except Exception as e:
+                print("Waiting for database...")
+                time.sleep(1)
+                last_error = e
+                retries = retries + 1
+
+        if not connected:
+            raise RuntimeError("Cannot connect to the test database") from last_error
+
+    def migrate(self, migration_script):
+        with open(migration_script, 'r') as script:
+            self.db.query(script.read())
+
+    def query(self, query: str):
+        return self.db.query(query)

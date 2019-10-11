@@ -100,7 +100,7 @@ docker build -t dashboard:tests -f dashboard/tests/Dockerfile .
 Once the image is build the tests can be preformed by typing
 
 ```bash
-docker run --rm dashboard:tests
+docker-compose --file dashboard/tests/docker-compose.yml up --abort-on-container-exit && docker-compose --file dashboard/tests/docker-compose.yml down
 ```
 
 The output of this command shows a nicely formatted information of number of tests performed and success ratio (all tests are performed by using `pytest` package).

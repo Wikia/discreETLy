@@ -1,4 +1,3 @@
-from functools import reduce
 from dashboard.utils import clean_dag_id
 
 from dashboard.models import DagRun, TaskInstance
@@ -17,9 +16,12 @@ class AirflowDBDataProvider:
         return result[0]['state']
 
     def get_history(self, days):
+        # used to skip the dag version while sorting in order to get only the most recent ones
+        extracted_dag_name_regex = '''SUBSTRING(dag_id FROM 1 FOR (REGEXP_INSTR(dag_id, '_v?[0-9]+.[0-9]+$') - 1))'''
+
         SQL = f'''
         SELECT dag_id, date, state FROM (
-            SELECT dag_id, execution_date as date, state, ROW_NUMBER() OVER (PARTITION BY dag_id ORDER BY execution_date DESC) AS age
+            SELECT dag_id, execution_date as date, state, ROW_NUMBER() OVER (PARTITION BY {extracted_dag_name_regex} ORDER BY execution_date DESC) AS age
             FROM dag_run
         ) t WHERE age <= {days}
         '''
