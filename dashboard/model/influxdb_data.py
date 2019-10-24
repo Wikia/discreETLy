@@ -1,4 +1,6 @@
 import datetime
+from typing import Dict, Any
+
 from dashboard.service.influxdb_service import InfluxDbService
 
 class InfluxDBData:
@@ -17,14 +19,20 @@ class InfluxDBData:
                 f'ORDER BY time ASC'
         return query
 
-    def get_influx_data(self, days, period_mapping):
+    def get_influx_data(self, days, period_mapping) -> Dict[str, Any]:
         influx_stats = {}
         query = 'SELECT * FROM /emr_stats_.*/ ' \
                 'WHERE time >= now() - {days}d'.format(days=days)
         result_set = self.influx.query(query)
-        measurements = result_set.raw['series']
-        mapper = lambda row:  (datetime.datetime.strptime(row['time'], '%Y-%m-%dT%H:%M:%SZ'), row['records'])
+        try:
+            measurements = result_set.raw['series']
+        except KeyError as no_series_in_response_error:
+            self.logger.warning(f'Request to influx_data returned no series data, request error: {result_set.error}',
+                                f'raw result: {result_set} - probably no data for the query in the DB',
+                                no_series_in_response_error)
+            return {}
 
+        mapper = lambda row:  (datetime.datetime.strptime(row['time'], '%Y-%m-%dT%H:%M:%SZ'), row['records'])
         for measurement_name in [x['name'] for x in measurements]:
             measurement_data = list(result_set.get_points(measurement=measurement_name))
             base_table_id = measurement_name[10:]
