@@ -24,4 +24,4 @@ services:
       - mysql
     volumes:
         - type: tmpfs
-          target: /var/run
+          target: /var/run/discreetly
