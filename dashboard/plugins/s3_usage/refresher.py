@@ -10,9 +10,9 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from dashboard.utils import Timer
 
-STATS_DB_PATH = '/var/run/s3_stats.db'
-STATS_DB_TMP_PATH = '/var/run/s3_stats.db.tmp'
-LOCK_PATH = '/var/run/s3_stats.db.lock'
+STATS_DB_PATH = '/var/run/discreetly/s3_stats.db'
+STATS_DB_TMP_PATH = '/var/run/discreetly/s3_stats.db.tmp'
+LOCK_PATH = '/var/run/discreetly/s3_stats.db.lock'
 
 class S3StatsRefresher:
     def __init__(self, logger, params):
