@@ -7,6 +7,9 @@ base_path = '/table_descriptions'
 tab_name = 'Table descriptions'
 plugin = Blueprint('table_descriptions', __name__, template_folder='templates')
 
+def splitpart (value, index, char = ','):
+    return value.split(char)[index]
+
 DEFAULT_CACHE = 300
 def get_descriptions():
     cache_ttl = app.config.get('TABLE_DESCRIPTIONS_TTL', DEFAULT_CACHE)
@@ -22,6 +25,7 @@ def get_descriptions():
 
     descriptions = load_data_provider(classname, params).get_table_descriptions()
     app.cache.set('table_descriptions', descriptions, timeout=cache_ttl)
+    app.jinja_env.filters['splitpart'] = splitpart
     return descriptions
 
 @plugin.route('/')
