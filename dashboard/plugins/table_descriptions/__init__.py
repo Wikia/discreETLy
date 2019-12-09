@@ -50,6 +50,7 @@ def update_form_column():
     request_params['namespace'] = request.args.get('namespace')
     request_params['column_name'] = request.args.get('column_name')
     request_params['old_description'] = request.args.get('old_description')
+    request_params['old_example'] = request.args.get('old_example')
     return render_template('table_descriptions/update_column_form_demo.html', request_params=request_params)
 
 """
@@ -71,7 +72,7 @@ Commits an update to glue with a new description of a given column from a submit
 def update_column():
     # fetch data from the submitted form
     column_description = request.args.get('column_description')
-    example = request.args.get('example')
+    example = request.args.get('old_example')
     table_name = request.args.get('table_name')
     namespace = request.args.get('namespace')
     col_to_update = request.args.get('column')
