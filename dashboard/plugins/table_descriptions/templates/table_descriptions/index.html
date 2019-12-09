@@ -33,6 +33,7 @@
                 Database | Table name
             </div>
             <div class="col-9">Description</div>
+            <div class="col-9">Example</div>
         </div>
         {% for table_name, details in tables.items() %}
             <div id="{{ table_name }}" class="table-data">
@@ -52,12 +53,14 @@
                         <div class="col-3">Column</div>
                         <div class="col-3">Type</div>
                         <div class="col-6">Description</div>
+                        <div class="col-9">Example</div>
                     </div>
                     {% for column in details.columns %}
                         <div class="row column-data">
                             <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
                             <div class="col-3">{{ column.type }}</div>
                             <div class="col-6">{{ column.description }} <a href="https://console.aws.amazon.com/glue/home?region=us-east-1#table:name={{ table_name | splitpart(1, '.') }};namespace={{ table_name | splitpart(0, '.') }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
+                            <div class="col-9">{{ column.example }} <a href="https://console.aws.amazon.com/glue/home?region=us-east-1#table:name={{ table_name | splitpart(1, '.') }};namespace={{ table_name | splitpart(0, '.') }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
                         </div>
                     {% endfor %}
                 </div>
