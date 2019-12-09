@@ -54,6 +54,8 @@ class GlueDescriptionService:
                 columns = [{'name': column['Name'],
                             'description': column.get('Comment', ''),
                             'is_partition': False,
+                            #TODO: fill this
+                            'example': 'ToDoImport',
                             'type': column.get('Type')}
                            for column in table['StorageDescriptor']['Columns']]
 
