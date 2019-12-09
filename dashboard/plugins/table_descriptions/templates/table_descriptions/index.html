@@ -33,7 +33,6 @@
                 Database | Table name
             </div>
             <div class="col-9">Description</div>
-            <div class="col-9">Example</div>
         </div>
         {% for table_name, details in tables.items() %}
             <div id="{{ table_name }}" class="table-data">
@@ -46,21 +45,23 @@
                             {{ table_name }}
                         </span>
                     </div>
-                    <div class="col-9">{{ details.description }} <a href="https://console.aws.amazon.com/glue/home?region=us-east-1#table:name={{ table_name | splitpart(1, '.') }};namespace={{ table_name | splitpart(0, '.') }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a>  </div>
+                    <div class="col-9">{{ details.description }} <a href="/table_descriptions/update_form_table?table_name={{ table_name | splitpart(1, '.') }}&namespace={{ table_name | splitpart(0, '.') }}&old_description={{ details.description }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a>  </div>
                 </div>
                 <div class="row column-data-section" id="columns_{{ table_name }}">
                     <div class="row table-columns-header">
                         <div class="col-3">Column</div>
                         <div class="col-3">Type</div>
-                        <div class="col-6">Description</div>
-                        <div class="col-9">Example</div>
+                        <div class="col-3">Description</div>
+                        <div class="col-3">Example</div>
+                        <div class="col-6">Desc. update</div>
                     </div>
                     {% for column in details.columns %}
                         <div class="row column-data">
                             <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
-                            <div class="col-3">{{ column.type }}</div>
-                            <div class="col-6">{{ column.description }} <a href="https://console.aws.amazon.com/glue/home?region=us-east-1#table:name={{ table_name | splitpart(1, '.') }};namespace={{ table_name | splitpart(0, '.') }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
-                            <div class="col-9">{{ column.example }} <a href="https://console.aws.amazon.com/glue/home?region=us-east-1#table:name={{ table_name | splitpart(1, '.') }};namespace={{ table_name | splitpart(0, '.') }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
+                            <div class="col-3">{{ column.type }} </div>
+                            <div class="col-3">{{ column.description }} <a href="/table_descriptions/update_form_column?table_name={{ table_name | splitpart(1, '.') }}&namespace={{ table_name | splitpart(0, '.') }}&column_name={{ column.name }}&old_description={{ column.description }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
+                            <div class="col-3">{{ column.example }} </div>
+                            <div class="col-3">{{ column.last_description_update }}</div>
                         </div>
                     {% endfor %}
                 </div>

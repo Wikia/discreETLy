@@ -2,6 +2,7 @@ from collections import defaultdict
 from timeit import default_timer as timer
 
 import boto3
+import json
 
 from flask import current_app as app
 
@@ -85,9 +86,27 @@ class GlueDescriptionService:
             for db, tables in self.db_tables.items():
                 futures.append((db, app.async_request_executor.submit(self.get_tables_for_db, db, tables)))
 
-            result = dict()
+            tables_metadata = dict()
             for db, tables in futures:
                 for table in tables.result():
-                    result['{}.{}'.format(db, table['name'])] = table
+                    tables_metadata['{}.{}'.format(db, table['name'])] = table
 
-        return result
+        for table_name, metadata in tables_metadata.items():
+            try:
+                td_dict = json.loads(metadata['description'])
+                metadata['description'] = td_dict['table_description']
+                metadata['last_description_update'] = td_dict['last_update_timestamp']
+            except ValueError as err:
+                metadata['previous_description_update'] = ''
+
+            for column in metadata['columns']:
+                try:
+                    cd_dict = json.loads(column['description'])
+                    column['description'] = cd_dict['column_description']
+                    column['last_description_update'] = cd_dict['last_update_timestamp']
+                    column['example'] = cd_dict['example']
+                except ValueError as err:
+                    column['last_description_update'] = ''
+                    column['example'] = ''
+
+        return tables_metadata
