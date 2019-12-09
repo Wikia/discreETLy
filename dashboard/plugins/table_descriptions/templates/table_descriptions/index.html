@@ -1,6 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% import 'macros/common.html' as common with context %}
 
+
 {% block autorefresh %}{% endblock %}
 
 {% block title %}Table {% endblock %}
@@ -35,6 +36,8 @@
             <div class="col-9">Description</div>
         </div>
         {% for table_name, details in tables.items() %}
+            {% set edit_columns_loop = loop %}
+
             <div id="{{ table_name }}" class="table-data">
                 <div id="header-{{ table_name }}" class="row column-header-section">
                     <div class="col-3">
@@ -60,6 +63,27 @@
                             <div class="col-3">{{ column.type }} </div>
                             <div class="col-3">{{ column.description }}  <br><i>{% if column.last_description_update %} {{ column.last_description_update }} {% else %} Sourced from SQL {% endif %} </i> <a href="/table_descriptions/update_form_column?table_name={{ table_name | splitpart(1, '.') }}&namespace={{ table_name | splitpart(0, '.') }}&column_name={{ column.name }}&old_description={{ column.description }}&old_example={{ column.example }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
                             <div class="col-3">{{ column.example }} </div>
+                            <div class="col-3 button-edit" id="button-edit-{{ '%s' % loop.index }}">
+                                <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Image">
+                                <button class="btn">Button</button>
+                                <script>
+                                    document.getElementById("#button-edit-{{ '%s' % edit_columns_loop }}-{{ '%s' % loop.index }}").onclick = function(){
+                                        document.getElementById("form-update-column-{{ '%s' % edit_columns_loop }}-{{ '%s' % loop.index }}").style.display="block";
+                                    };
+                                </script>
+                            </div>
+                            <form action="/table_descriptions/post_update_column" id="form-update-column-{{ '%s' % edit_columns_loop }}-{{ '%s' % loop.index }}" style="visibility: hidden;">
+                                Column description:<br>
+                                <input type="text" name="column_description" value="{{ column.description }}">
+                                <br>
+                                Example:<br>
+                                <input type="text" name="example" value="{{ column.example}}">
+                                <br><br>
+                                <input type="hidden" name="namespace" value="{{ table_name | splitpart(0, '.') }}">
+                                <input type="hidden" name="table_name" value="{{ table_name | splitpart(1, '.') }}">
+                                <input type="hidden" name="column" value="{{ column.name }}">
+                                <input type="submit" value="Submit">
+                            </form>
                         </div>
                     {% endfor %}
                 </div>
