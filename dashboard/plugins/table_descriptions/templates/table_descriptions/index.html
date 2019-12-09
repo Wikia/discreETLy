@@ -58,7 +58,7 @@
                         <div class="row column-data">
                             <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
                             <div class="col-3">{{ column.type }} </div>
-                            <div class="col-3">{{ column.description }}  <br><i>{% if column.last_description_update %} {{ column.last_description_update }} {% else %} Sourced from SQL statement {% endif %} </i> <a href="/table_descriptions/update_form_column?table_name={{ table_name | splitpart(1, '.') }}&namespace={{ table_name | splitpart(0, '.') }}&column_name={{ column.name }}&old_description={{ column.description }}&old_example={{ column.example }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
+                            <div class="col-3">{{ column.description }}  <br><i>{% if column.last_description_update %} {{ column.last_description_update }} {% else %} Sourced from SQL {% endif %} </i> <a href="/table_descriptions/update_form_column?table_name={{ table_name | splitpart(1, '.') }}&namespace={{ table_name | splitpart(0, '.') }}&column_name={{ column.name }}&old_description={{ column.description }}&old_example={{ column.example }}"> <img src="http://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/256/edit-icon.png" alt="Edit icon" style="width:15px;height:15px"></a> </div>
                             <div class="col-3">{{ column.example }} </div>
                         </div>
                     {% endfor %}
