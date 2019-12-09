@@ -41,31 +41,6 @@ def index():
     return render_template('table_descriptions/index.html', tables=get_descriptions())
 
 """
-Renders a webform to update a single column description in glue
-"""
-@plugin.route('/update_form_column')
-def update_form_column():
-    request_params = dict()
-    request_params['table_name'] = request.args.get('table_name')
-    request_params['namespace'] = request.args.get('namespace')
-    request_params['column_name'] = request.args.get('column_name')
-    request_params['old_description'] = request.args.get('old_description')
-    request_params['old_example'] = request.args.get('old_example')
-    return render_template('table_descriptions/update_column_form_demo.html', request_params=request_params)
-
-"""
-Renders a webform to update a table description in glue
-"""
-@plugin.route('/update_form_table')
-def update_form_table():
-    request_params = dict()
-    request_params['table_name'] = request.args.get('table_name')
-    request_params['namespace'] = request.args.get('namespace')
-    request_params['old_description'] = request.args.get('old_description')
-    return render_template('table_descriptions/update_table_form_demo.html', request_params=request_params)
-
-
-"""
 Commits an update to glue with a new description of a given column from a submitted form
 """
 @plugin.route('/post_update_column')
