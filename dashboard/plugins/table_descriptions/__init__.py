@@ -72,7 +72,7 @@ Commits an update to glue with a new description of a given column from a submit
 def update_column():
     # fetch data from the submitted form
     column_description = request.args.get('column_description')
-    example = request.args.get('old_example')
+    example = request.args.get('example')
     table_name = request.args.get('table_name')
     namespace = request.args.get('namespace')
     col_to_update = request.args.get('column')
