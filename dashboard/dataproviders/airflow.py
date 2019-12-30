@@ -16,15 +16,29 @@ class AirflowDBDataProvider:
         return result[0]['state']
 
     def get_history(self, days):
-        # used to skip the dag version while sorting in order to get only the most recent ones
-        extracted_dag_name_regex = '''SUBSTRING(dag_id FROM 1 FOR (REGEXP_INSTR(dag_id, '_v?[0-9]+.[0-9]+$') - 1))'''
-
         SQL = f'''
         SELECT dag_id, date, state FROM (
-            SELECT dag_id, execution_date as date, state, ROW_NUMBER() OVER (PARTITION BY {extracted_dag_name_regex} ORDER BY execution_date DESC) AS age
-            FROM dag_run
-        ) t WHERE age <= {days}
-        '''
+            SELECT
+                @row_number:=CASE
+                    WHEN @dag_id_current = clean_dag_id
+                      THEN
+                          @row_number + 1
+                      ELSE
+                           1
+                    END AS rownum,
+                @dag_id_current:=clean_dag_id clean_dag_id,
+                dag_id,
+                execution_date as date,
+                state
+            FROM (
+                SELECT *,
+                    CASE
+                        WHEN substring_index(reverse(dag_id), "v_", 1) rlike '[0-9]+\.[0-9]'
+                        THEN substring(dag_id, 1, length(dag_id) -1 - locate("v_", reverse(dag_id)))
+                        ELSE dag_id
+                    END as clean_dag_id from dag_run) dag_run, (SELECT @dag_id_current:='',@row_number:=0) as t
+            ORDER BY clean_dag_id, execution_date DESC
+        ) dr WHERE rownum <= {days}'''
         data = self.client.query(SQL)
 
         dag_names = set(map(lambda row: clean_dag_id(row['dag_id']), data))
@@ -54,12 +68,23 @@ class AirflowDBDataProvider:
 
     def get_newest_task_instances(self):
         newest_task_instances_sql = '''
-        SELECT dr.dag_id, dr.execution_date, dag_state, task_id, ti.state AS task_state, duration, start_date, end_date FROM (
-            SELECT dag_run.dag_id, execution_date, state AS dag_state, ROW_NUMBER() OVER (PARTITION BY dag_run.dag_id ORDER BY execution_date DESC) AS age 
+        SELECT
+            dr.dag_id,
+            dr.execution_date,
+            dr_latest.state as dag_state,
+            ti.task_id,
+            ti.state as task_state,
+            ti.duration,
+            ti.start_date,
+            ti.end_date
+        FROM (
+            SELECT dag_id,
+                MAX(execution_date) as execution_date
             FROM dag_run
-            JOIN dag ON dag.dag_id = dag_run.dag_id AND is_active = 1 AND is_paused = 0) dr 
-        JOIN task_instance ti ON ti.dag_id = dr.dag_id AND ti.execution_date = dr.execution_date
-        WHERE dr.age = 1'''.replace("\n", "")
+                GROUP BY dag_id) dr
+        JOIN dag_run dr_latest ON dr.dag_id = dr_latest.dag_id AND dr.execution_date = dr_latest.execution_date
+        JOIN task_instance ti ON dr.dag_id = ti.dag_id AND dr.execution_date = ti.execution_date
+        JOIN dag ON dag.dag_id = dr.dag_id AND is_active = 1 AND is_paused = 0'''.replace("\n", "")
 
         data = self.client.query(newest_task_instances_sql)
         result = {}
@@ -91,11 +116,19 @@ class AirflowDBDataProvider:
         '''
 
         latest_dags_status_sql = '''
-        SELECT * FROM (
-            SELECT dag.dag_id, state, ROW_NUMBER() OVER (PARTITION BY dag.dag_id ORDER BY execution_date DESC) AS age 
-            FROM dag_run
-            JOIN dag ON dag.dag_id = dag_run.dag_id AND is_active = 1 AND is_paused = 0) dr 
-        WHERE age = 1'''.replace("\n", "")
+        SELECT
+           dag_run.dag_id,
+           dag_run.state
+        FROM dag_run
+        INNER JOIN (SELECT
+                        dag_id,
+                        MAX(execution_date) AS date
+                    FROM dag_run
+                    GROUP BY dag_id) mx
+            ON
+            dag_run.dag_id = mx.dag_id
+            AND dag_run.execution_date = mx.date
+        JOIN dag ON dag.dag_id = dag_run.dag_id AND is_active = 1 AND is_paused = 0'''.replace("\n", "")
         return [{
             'name': clean_dag_id(dag['dag_id']),
             'state': dag['state']}
