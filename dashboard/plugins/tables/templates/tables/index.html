@@ -37,10 +37,10 @@
         {% if 'table_descriptions' in plugins %}</a>{% endif %}
         {% if table.active_alerts %}
             {% for alert in table.active_alerts %}
-                <a href="{{ alert.link }}" target="_blank"><i class="cui-circle-x text-danger" data-toggle="tooltip" data-placement="bottom" title="Alert triggered {{ alert.name}}"></i></a>
+                <a href="{{ alert.link }}" target="_blank"><i class="cil-x-circle text-danger" data-toggle="tooltip" data-placement="bottom" title="Alert triggered {{ alert.name}}"></i></a>
             {% endfor %}
         {% else %}
-            <i class="cui-circle-check text-success" data-toggle="tooltip" data-placement="bottom" title="No active alerts"></i>
+            <i class="cil-check text-success" data-toggle="tooltip" data-placement="bottom" title="No active alerts"></i>
         {% endif %}
     </p>
   </div>

@@ -59,7 +59,7 @@
     <div class="col-4 col-sm-4 col-md-2 col-xl-2">
       <a href="{{ config.AIRFLOW_WEBSERVER_BASE_URL }}/admin/airflow/tree?dag_id={{ etl.dag_id }}" target="_blank"  ><button type="button" class="btn status btn-{{ common.status_button_color(etl.state) }}">
           {% if etl.state == 'running' %}
-            <span class="cui-speedometer"></span>
+            <span class="cil-speedometer"></span>
           {% endif %}
           {% if etl.tables_total %}
             {{ (etl.tasks_completed / etl.tasks_total * 100)|int }}% ({{ etl.tables_completed }} of {{ etl.tables_total }}) </button>

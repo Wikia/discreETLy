@@ -22,14 +22,14 @@
             </div>
         </div>
         <div id="legend">
-            Legend: <span class="cui-layers" aria-hidden="true"></span> Partition column
+            Legend: <span class="cil-layers" aria-hidden="true"></span> Partition column
         </div>
     </div>
 
     <div id="table-container">
         <div class="row mt-3 table-header">
             <div class="col-3">
-                <span id="all-toggle" class="toggle"><span class="cui-chevron-right" aria-hidden="true"></span></span>
+                <span id="all-toggle" class="toggle"><span class="cil-chevron-right" aria-hidden="true"></span></span>
                 Database | Table name
             </div>
             <div class="col-9">Description</div>
@@ -40,7 +40,7 @@
                     <div class="col-3">
                         <span style="white-space: nowrap;">
                             <span id="toggle-{{ table_name }}" class="toggle row-toggle">
-                                <span class="cui-chevron-right" aria-hidden="true"></span>
+                                <span class="cil-chevron-right" aria-hidden="true"></span>
                             </span>
                             {{ table_name }}
                         </span>
@@ -55,7 +55,7 @@
                     </div>
                     {% for column in details.columns %}
                         <div class="row column-data">
-                            <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cui-layers" aria-hidden="true"></span>{% endif %}</div>
+                            <div class="col-3">{{ column.name }} {% if column.is_partition %}<span class="cil-layers" aria-hidden="true"></span>{% endif %}</div>
                             <div class="col-3">{{ column.type }}</div>
                             <div class="col-6">{{ column.description }}</div>
                         </div>
@@ -72,8 +72,8 @@
     <script src="{{ url_for('static', filename='js/highlight.js') }}"></script>
     <script src="{{ url_for('static', filename='js/render_vis.js') }}"></script>
     <script>
-        const collapsed_char = '<span class="cui-chevron-right" aria-hidden="true"></span>';
-        const expanded_char = '<span class="cui-chevron-bottom" aria-hidden="true"></span>';
+        const collapsed_char = '<span class="cil-chevron-right" aria-hidden="true"></span>';
+        const expanded_char = '<span class="cil-chevron-bottom" aria-hidden="true"></span>';
 
 
         expand_all = function () {
