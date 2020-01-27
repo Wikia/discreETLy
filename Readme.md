@@ -121,5 +121,6 @@ Maintained by [Fandom's](https://github.com/Wikia) Data Engineering team
 [jcellary](https://github.com/jcellary)
 [szczeles](https://github.com/szczeles)
 [MikolajBalcerek](https://github.com/MikolajBalcerek)
+[bartoszmikulski](https://github.com/mikulskibartosz)
 * QA
 [klistiano](https://github.com/klistiano)
