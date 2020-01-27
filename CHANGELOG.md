@@ -1,3 +1,30 @@
+# VERSION 0.3.0
+
+## Base
+
+### Changes
+
+* [Do not take manual task success as task exection](https://github.com/Wikia/discreETLy/pull/25/files)
+* [Bump DiscreETLy to Python 3.7 and update loginpass](https://github.com/Wikia/discreETLy/pull/28)
+* [Replace Fandom/Wikia branding with `COMPANY_NAME`](https://github.com/Wikia/discreETLy/issues/31)
+* [Make dataprovider Airflow compatible with MySQL 5.7](https://github.com/Wikia/discreETLy/issues/33)
+
+### Fixes
+
+* [Fix issue where ETL dashboard displayed too many icons when a DAG had some failing statuses](https://github.com/Wikia/discreETLy/pull/26)
+* [Fix non-displaying icons](https://github.com/Wikia/discreETLy/issues/32)
+
+## Plugins
+
+### Changes
+
+* Tables (tables managed by..): Add possibility of declaring dependency on table from another DAG [#22](https://github.com/Wikia/discreETLy/pull/23/files), [#21](https://github.com/Wikia/discreETLy/pull/21)
+
+### Fixes
+
+* [S3 Usage: Fixed HTML title for initialization phase](https://github.com/Wikia/discreETLy/issues/34) 
+* [S3 Usage: Move S3 database so the plugin can be used as non-root user](https://github.com/Wikia/discreETLy/pull/27)
+
 # VERSION 0.2.9
 
 ## Plugins

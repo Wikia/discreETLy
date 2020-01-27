@@ -112,6 +112,7 @@ docker run --rm -v <absolute_path_to_project_root_directory>:/tmp/dashboard/ das
 ```
 
 ## Credits
+Maintained by [Fandom's](https://github.com/Wikia) Data Engineering team
 
 * Concept & Product Design: 
 [JoannaBorun](https://github.com/JoannaBorun)
@@ -120,5 +121,6 @@ docker run --rm -v <absolute_path_to_project_root_directory>:/tmp/dashboard/ das
 [jcellary](https://github.com/jcellary)
 [szczeles](https://github.com/szczeles)
 [MikolajBalcerek](https://github.com/MikolajBalcerek)
+[bartoszmikulski](https://github.com/mikulskibartosz)
 * QA
 [klistiano](https://github.com/klistiano)
