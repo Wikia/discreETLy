@@ -5,8 +5,7 @@
 {% block body %}
 
     <div class="text-center">
-
-        <h3>Login to your {{  config.OAUTH_DOMAIN }} account to access the site</h3>
+        <h3>Login to your {{  config.OAUTH_DOMAIN if config.OAUTH_DOMAIN is string else "/".join(config.OAUTH_DOMAIN)  }} account to access the site</h3>
     <p>
         <a href="{{  url_for('loginpass_google.login') }}"><button class="btn btn-primary">Proceed to Google Authentication</button></a>
     </p>

@@ -17,7 +17,7 @@ From the technical perspective: after the application starts, plugin starts `S3S
 that checks for buckets matching the provided regular expression. For each bucket all keys
 are listed and the metadata are stored in aggregated context (in "directory" context) in 
 SQLite database inside Docker container. Tab view uses REST API to retrieve the requested 
-data from SQLite database and presend them in form of the directory tree and subburst
+data from SQLite database and present them in form of the directory tree and subburst
 diagram.
 
 ![s3 usage](screenshot.png)

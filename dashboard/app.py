@@ -4,6 +4,7 @@ import os
 import logging
 import importlib
 from datetime import datetime
+from typing import List
 
 from flask import Flask, session, redirect, request, url_for
 from flask_sslify import SSLify
@@ -24,15 +25,20 @@ from dashboard.utils import get_yaml_file_content
 
 TABLES_PATH = 'config/tables.yaml'
 
+
 def setup_authentication(app):
     oauth = OAuth(app)
 
     def handle_redirects(remote, token, user_info):
-        if not 'hd' in user_info or user_info['hd'] != app.config['OAUTH_DOMAIN']:
-            return redirect(url_for('page.login'))
+        if 'hd' in user_info:
+            if user_info['hd'] == app.config['OAUTH_DOMAIN'] \
+                    or (isinstance(app.config['OAUTH_DOMAIN'], List) and user_info['hd'] in app.config['OAUTH_DOMAIN']):
 
-        session['user'] = user_info
-        return redirect(session.get('next', '/'))
+                session['user'] = user_info
+                return redirect(session.get('next', '/'))
+
+        return redirect(url_for('page.login'))
+
 
     def ensure_user_is_authorized(app):
         if 'user' not in session and request.path not in ['/oauth/login', '/oauth/auth', '/login', '/healthcheck'] and not request.path.startswith('/static/'):

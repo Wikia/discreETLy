@@ -1,3 +1,4 @@
+werkzeug==0.16.*
 Flask==1.0.*
 Flask-SSLify
 gunicorn==19.9.*
