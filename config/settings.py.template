@@ -39,7 +39,8 @@ DEBUG = not 'PROD' in ENV_VAR_PREFIX
 # Leave this section commented out if you want to ignore OAuth functionality.
 # GOOGLE_CLIENT_ID = os.environ['OAUTH_CLIENT_ID']
 # GOOGLE_CLIENT_SECRET = os.environ['OAUTH_SECRET']
-# Use domain that is used for OAuth services at your comapny, e.g. fandom.com
+# Use domain that is used for OAuth services at your company, e.g. 'fandom.com'
+# You can also use a list ['domain1.com', 'domain2.com']
 # OAUTH_DOMAIN = 
 
 # Application secret
