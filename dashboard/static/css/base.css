@@ -127,6 +127,10 @@ row {
     color: #006661;
 }
 
+.app-header ul.navbar-nav {
+    flex-direction: row;
+}
+
 .breadcrumb {
     background-color: #fff;
     color: #006661;
