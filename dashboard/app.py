@@ -20,10 +20,12 @@ from dashboard.service.influxdb_service import InfluxDbService
 from dashboard.model.influxdb_data import InfluxDBData
 from dashboard.model.prometheus_data import PrometheusData
 from dashboard.model.tables_data import TableDataProvider
+from dashboard.model.links_data import LinksDataProvider
 from dashboard.models import ExtraEtl
 from dashboard.utils import get_yaml_file_content
 
 TABLES_PATH = 'config/tables.yaml'
+LINKS_PATH = 'config/links.yaml'
 
 
 def setup_authentication(app):
@@ -96,6 +98,9 @@ def create_app(settings_override=None):
     app.table_data_provider = TableDataProvider(
         app.airflow_data_provider, app.influx_data_provider,
         app.prometheus_data_provider, tables, app.logger, app.config) if tables else None
+
+    links = get_yaml_file_content(LINKS_PATH)
+    app.links_data_provider = LinksDataProvider(links)
 
     app.etl_data_provider = EtlDataProvider(
         app.config, app.airflow_data_provider, app.table_data_provider)

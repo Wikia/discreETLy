@@ -53,6 +53,7 @@ in the following docs:
 * [Athena Usage](dashboard/plugins/athena_usage/README.md) - summaries
   of users' queries data consumption to Athena
 * [Hello World](dashboard/plugins/hello_world/README.md) - DiscreETLy Developers Docs
+* Important links - update links in config/links.yaml
 
 
 ## Running locally
