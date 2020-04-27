@@ -11,6 +11,9 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 
+    <div class="row">
+    <div class="col-6">
+    
     {% set etl_failure = etl_summary | selectattr('state', 'eq', 'failed') | list | count > 0 %}
 
     <div id="etl-status" class="card{% if etl_failure %} text-white etl-danger {% endif %}" style="max-width: 18rem;">
@@ -45,7 +48,7 @@
         {% set tables_failure = tables | selectattr('state', 'eq', 'failed') | list | count > 0 %}
 
 
-        <div class="col-4">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header{% if tables_failure %} text-white etl-danger {% endif %}">
                     <b>Tables daily load status</b>
@@ -84,4 +87,19 @@
 
     </div>
     {% endif %}
+    </div>
+    
+    <div class="col-6">
+        <h2>Important links</h2>
+        <ul>
+            {% for link in links %}
+                <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    </div>
+    
+    
+    
 {% endblock %}
