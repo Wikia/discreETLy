@@ -16,13 +16,14 @@ class S3Stats:
         data = self.db.query(path, children_only=False, depth=len(path.split('/'))-1)
         if len(data) == 0:
             return {}
-
-        return {
-            sclass: {
-                'size': sizeof_fmt(data[0][sclass]),
-                'percent': data[0][sclass] / data[0]['size']
-            } for sclass in ['size_standard', 'size_ia', 'size_glacier']
-        }
+        sclasses_dict = dict()
+        for sclass in ['size_standard', 'size_ia', 'size_glacier']:
+            try:
+                percent = data[0][sclass] / data[0]['size']
+            except ZeroDivisionError:
+                percent = 0
+            sclasses_dict[sclass] = {'size': sizeof_fmt(data[0][sclass]), 'percent': percent}
+        return sclasses_dict
 
     def describe(self, node, strip=''):
         return f"{html.escape(node['path'][len(strip):])} ({node['files']} files, {sizeof_fmt(node['size'])})"
@@ -30,7 +31,6 @@ class S3Stats:
     def get_jstree_buckets(self, order):
         total = self.db.query('', 0)[0]
         buckets = self.db.query('', 1, order, children_only=True)
-
         return {
             "text" : "All buckets " + self.describe(total), "state": {"opened": True}, "id": "root",
             "children" : [{ "id": bucket['path'], "text" : self.describe(bucket, '/'), "children" : True } 
@@ -103,7 +103,7 @@ class S3StatsDB:
             try:
                 cursor = sqlite.cursor()
                 cursor.execute(query)
-                return cursor.fetchall() 
+                return cursor.fetchall()
             finally:
                 cursor.close()
                 sqlite.close()
