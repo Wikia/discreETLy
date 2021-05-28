@@ -16,14 +16,13 @@ class S3Stats:
         data = self.db.query(path, children_only=False, depth=len(path.split('/'))-1)
         if len(data) == 0:
             return {}
-        sclasses_dict = dict()
-        for sclass in ['size_standard', 'size_ia', 'size_glacier']:
-            try:
-                percent = data[0][sclass] / data[0]['size']
-            except ZeroDivisionError:
-                percent = 0
-            sclasses_dict[sclass] = {'size': sizeof_fmt(data[0][sclass]), 'percent': percent}
-        return sclasses_dict
+
+        return {
+            sclass: {
+                'size': sizeof_fmt(data[0][sclass]),
+                'percent': data[0][sclass] / data[0]['size'] if data[0]['size'] > 0 else 0
+            } for sclass in ['size_standard', 'size_ia', 'size_glacier']
+        }
 
     def describe(self, node, strip=''):
         return f"{html.escape(node['path'][len(strip):])} ({node['files']} files, {sizeof_fmt(node['size'])})"
