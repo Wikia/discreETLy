@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY requirements.txt requirements.txt
 RUN apk add --update --no-cache mariadb-connector-c \
-     && apk add --no-cache --virtual .build-deps mariadb-dev gcc musl-dev gcc build-base libffi-dev \
+     && apk add --no-cache --virtual .build-deps mariadb-dev gcc musl-dev gcc build-base libffi-dev cargo \
+     && pip install --upgrade pip \
      && pip install -r requirements.txt \
      && apk del .build-deps
 
