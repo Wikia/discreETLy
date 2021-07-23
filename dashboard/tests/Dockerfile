@@ -5,6 +5,7 @@ WORKDIR /app
 RUN echo "deb http://ftp.debian.org/debian stretch-backports main libs contrib non-free" > /etc/apt/sources.list.d/backports.list
 RUN apt update && apt upgrade -y
 RUN apt-get -t stretch-backports -y install libsqlite3-0
+RUN pip install --upgrade pip
 RUN pip install pytest 'moto==1.3.9'
 
 COPY requirements.txt requirements.txt
