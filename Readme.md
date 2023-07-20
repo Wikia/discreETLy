@@ -1,21 +1,25 @@
 # DiscreETLy
 
-[![Build Status](https://travis-ci.org/Wikia/discreETLy.svg?branch=master)](https://travis-ci.org/Wikia/discreETLy)
-[![](https://images.microbadger.com/badges/image/fandom/discreetly:0.2.9.svg)](https://microbadger.com/images/fandom/discreetly:0.2.9 "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/fandom/discreetly:0.2.9.svg)](https://microbadger.com/images/fandom/discreetly:0.2.9 "Get your own version badge on microbadger.com")
+## No longer maintained! 
 
-**DiscreETLy** is an add-on dashboard service on top of [Apache Airflow](https://github.com/apache/incubator-airflow). It is a user friendly UI showing status of particular DAGs. Moreover, it allows the users to map Tasks within a particular DAG to tables available in any system (relational and non-relational) via friendly yaml definition. **DiscreETLy** provides fuctionality for monitoring DAGs status as well as optional communication with services such as [Prometheus](https://prometheus.io/) or [InfluxDB](https://www.influxdata.com/).
+DiscreETLy's development has been stopped and the repository is put into archived, read-only mode.  
+We recommend looking into alternative Data Catalog solutions, like:
+- [Amudsen](https://github.com/amundsen-io/amundsen)
+- [DataHub](https://github.com/datahub-project/datahub)
+
+## Legacy docs
+**DiscreETLy** was an add-on dashboard service on top of [Apache Airflow](https://github.com/apache/incubator-airflow). It is a user friendly UI showing status of particular DAGs. Moreover, it allows the users to map Tasks within a particular DAG to tables available in any system (relational and non-relational) via friendly yaml definition. **DiscreETLy** provides fuctionality for monitoring DAGs status as well as optional communication with services such as [Prometheus](https://prometheus.io/) or [InfluxDB](https://www.influxdata.com/).
 
 ![screenshot](https://raw.githubusercontent.com/Wikia/discreETLy/master/dashboard/static/images/ui_screen.png)
 
-## Prerequisites
+### Prerequisites
 
 Minimal setup required to run the dashboard requires `docker`. You can find docker installation instructions on
 [official docker website](https://docs.docker.com/install/).
 
 The minimal setup requires also access to Airflow MySQL instance (MySQL version should be >= 8 and allow analytical functions).
 
-## Configuration
+### Configuration
 
 Before running or deploying **DiscreETLy** a configuration file needs to be provided. The template for configuration
 file can be found in `config` folder: `settings.py.template`. Configuration is provided as a standard python file,
@@ -27,7 +31,7 @@ file they will be simply ignored while running the app.
 If environment is not specified, the application is run in DEBUG mode, so any errors will be reported on dashboard UI. If environment variable `ENV_VAR_PREFIX` is set to `PROD` or appropriate
 option is changed in `settings.py` file the application will serve `500` errors as defined in dashboard [template](dashboard/blueprints/page/templates/500.html).
 
-## Views & Plugins
+### Views & Plugins
 
 The basic configuration file is enough to run the dashboard, however, in order to take
 full advantage of dashboard features and functionality there are some additional steps
@@ -56,7 +60,7 @@ in the following docs:
 * Important links - update links in config/links.yaml
 
 
-## Running locally
+### Running locally
 
 See: https://hub.docker.com/r/fandom/discreetly/
 
@@ -90,7 +94,7 @@ Remember to use docker image name and version provided during `build` stage.
 
 Once the container is ready and running navigate to `localhost:8000` in a browser and enjoy.
 
-### Testing
+#### Testing
 
 In order to run the tests a docker image needs to be build first. The Dockerfile is available in `dashboard/tests/` folder. To build an image one can run the following command from project's root directory:
 
@@ -113,7 +117,7 @@ docker run --rm -v <absolute_path_to_project_root_directory>:/tmp/dashboard/ das
 ```
 
 ## Credits
-Maintained by [Fandom's](https://github.com/Wikia) Data Engineering team
+DiscreETLy was maintained by [Fandom's](https://github.com/Wikia) Data Engineering team
 
 ---
 * Concept & Product Design: 
